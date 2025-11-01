@@ -249,6 +249,9 @@ fn main() {
                         output.push_str(&format!(
                             "<video autoplay loop muted playsinline data-src=\"{src}\" type=\"video/webm\"></video>",
                         ));
+                    } else if !tag.contains("kofi_symbol.svg") && false {
+                        tag.insert_str(5, "loading=\"lazy\" ");
+                        output.push_str(&tag);
                     } else {
                         output.push_str(&tag);
                     }
