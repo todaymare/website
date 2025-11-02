@@ -76,9 +76,10 @@ html, body {
 .post-nav {
   display: flex;
   justify-content: space-between;
-  max-width: 40rem; /* match your text-body */
-  font-size: 0.9rem;
   max-width: 40rem;
+  font-size: 0.9rem;
+  margin-left: auto;
+  margin-right: auto;
   
   justify-content: center;
 }
@@ -86,8 +87,9 @@ html, body {
 .post-nav div {
   flex: 1;
   background-color: var(--color-dark);
-  margin-top: 0.52rem;
-  margin-bottom: 0.52rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 1px;
 }
 
 .post-nav a {
