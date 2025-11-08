@@ -97,14 +97,14 @@
     <main>
         <article>
             <p>Let me take you through a journey of curiosity, growth, and cannibalism. One inspired by a video game and some questionable media..</p>
-<p>About a year ago, I watched the <a href="https://en.wikipedia.org/wiki/Plaything_(Black_Mirror)" target="_blank" rel="noopener noreferrer">Black Mirror episode &quot;Plaything&quot;</a> (awesome ep. btw). I didn't think much of it then but it was my introduction to the idea of artificial life.</p>
+<p>About a year ago, I watched the <a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Plaything_(Black_Mirror)">Black Mirror episode &quot;Plaything&quot;</a> (awesome ep. btw). I didn't think much of it then but it was my introduction to the idea of artificial life.</p>
 <p>Obviously, even before then I'd seen the fancy YouTube videos, you know the &quot;I made an ecosystem in Unity!&quot; ones. But again, still nothing.</p>
-<p>Until I saw a roguelike called <a href="https://store.steampowered.com/app/3011360/Primordialis/" target="_blank" rel="noopener noreferrer">Primordialis</a>.
+<p>Until I saw a roguelike called <a target="_blank" rel="noopener noreferrer" href="https://store.steampowered.com/app/3011360/Primordialis/">Primordialis</a>.
 It's this physics-based roguelike where you design your own creature out of cells (muscles, spikes, electric organs, etc.). And your enemies are also designed in the same way. Now I don't know if you see the vision but if you do, you already know what's coming.</p>
 <p>While playing the game I just couldn't help but imagine a world with the same rules of Primordialis, one where the creatures can evolve not only their tiny lil brains but also their body.</p>
 <p>So I became God.</p>
 <p><video autoplay loop muted playsinline data-src="./assets/the-first-day.webm" type="video/webm"></video></p>
-<h2>The first day</h2>
+<h2 id="the-first-day">The first day</h2>
 <p>In the beginning, there was nothing.<br />
 And before there was nothing, there was <del>MONSTERS</del> Rust.</p>
 <p>Of course, the first step was to decide what our little goobers (that's the name I called them in the code, yes) would be made out of. The elements, if you will.</p>
@@ -114,7 +114,7 @@ And before there was nothing, there was <del>MONSTERS</del> Rust.</p>
 <video autoplay loop muted playsinline data-src="./assets/apples.webm" type="video/webm"></video></p>
 <p>It went in the most boring way ever, it went alright. I had about 100 agents running for 5ish minutes and it had already perfected everything.</p>
 <p>Which, while a little disappointing, meant that I had the green light to go ahead and work on the fancy simulation now.</p>
-<h2>The second day</h2>
+<h2 id="the-second-day">The second day</h2>
 <p>Let there be motion.</p>
 <p>Previously, each goober had its own instance. But now they'd have to share the same resources.<br />
 And for them to actually care about those resources, there had to be stakes.</p>
@@ -138,7 +138,7 @@ So after that little experiment was over I was ready to move onto multicellular 
 <p>Are they stupid?<br />
 Yeah.<br />
 They're trying, okay</p>
-<h2>The third day</h2>
+<h2 id="the-third-day">The third day</h2>
 <p>Let there be... fat people?</p>
 <p>Now that we have goobers, and they can move around, eat food, and reproduce we can finally get to the entire point of this project and give them more cells to work with.</p>
 <p>At first I had very simple cell types that were basically stat modifiers. There was a SpeedyCell that increased your max speed &amp; decreased how much energy you lost from speeding. Or a basic cell that just increased your mass.<br />
@@ -148,18 +148,18 @@ Oh and also a HealthyCell which decreased the basal metabolic rate and fat cells
 Which obviously, led to the sword meta.</p>
 <p><video autoplay loop muted playsinline data-src="./assets/the-sword-meta.webm" type="video/webm"></video></p>
 <p>So uh, this is about the point where I started to fear I created a cult. But obviously the swords had to be stopped.</p>
-<p>My mate Kiniro (the dev of the game <a href="https://store.steampowered.com/app/3943850/Faster_Bunnies/" target="_blank" rel="noopener noreferrer">Faster Bunnies</a>) suggested a great fix: make goobers grow to their full size before they can spawn children.</p>
+<p>My mate Kiniro (the dev of the game <a target="_blank" rel="noopener noreferrer" href="https://store.steampowered.com/app/3943850/Faster_Bunnies/">Faster Bunnies</a>) suggested a great fix: make goobers grow to their full size before they can spawn children.</p>
 <p>Which actually worked!</p>
 <p>Except now they were just not growing at all.</p>
 <p><img src="./assets/smol.png" alt="" /></p>
 <p>So I thought: well, if these guys don't want to grow, I'll just let them fight it out.</p>
-<h2>And on the fourth day..</h2>
+<h2 id="and-on-the-fourth-day">And on the fourth day..</h2>
 <p>I let them fight.</p>
 <p>I gave them weapons (Spike cells). I gave them shields (..shield cells). But most importantly, I gave them an incredible 12 floats of memory⁴ so they could avenge their father.
 <video autoplay loop muted playsinline data-src="./assets/i-let-them-fight.webm" type="video/webm"></video></p>
 <p>Combat wasn't random either, getting hit on the side dealt more damage than getting hit on the head. And every collision damaged both sides. I thought they'd learn to be strategic about it, angling attacks &amp; dodging, but it mostly just led to the big guys eating their babies for food.</p>
 <p>Evolution is a cruel thing, huh?</p>
-<h2>On the fifth day</h2>
+<h2 id="on-the-fifth-day">On the fifth day</h2>
 <blockquote>
 <p>the scientists who studied the rivers<br />
 were forbidden to speak<br />
@@ -167,10 +167,10 @@ or to study the rivers.</p>
 </blockquote>
 <p>Which is totally irrelevant. I just didn't have a better way of ending this post.</p>
 <p>This was a really fun experiment that I'm definitely planning on returning to⁵.</p>
-<p>If you enjoyed it, laughed, or want to join the cult of rectangles. Maybe <a href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">buy me a coffee</a>?<br />
-Or if you would like to fork around <a href="https://github.com/todaymare/evolution-sim" target="_blank" rel="noopener noreferrer">here's the repo</a>. If you have any questions or feedback feel free to <a href="https://discord.gg/t7gNX8Kp72" target="_blank" rel="noopener noreferrer">join my discord server</a> or mail me at <a href="mailto:contact@daymare.net" target="_blank" rel="noopener noreferrer">contact@daymare.net</a></p>
+<p>If you enjoyed it, laughed, or want to join the cult of rectangles. Maybe <a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/todaymare">buy me a coffee</a>?<br />
+Or if you would like to fork around <a target="_blank" rel="noopener noreferrer" href="https://github.com/todaymare/evolution-sim">here's the repo</a>. If you have any questions or feedback feel free to <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/t7gNX8Kp72">join my discord server</a> or mail me at <a href="mailto:contact@daymare.net">contact@daymare.net</a></p>
 <hr />
-<p>¹: Related: <a href="../everbody-so-creative/" target="_blank" rel="noopener noreferrer">Everybody's So Creative!</a></p>
+<p>¹: Related: <a target="_blank" rel="noopener noreferrer" href="../everbody-so-creative/">Everybody's So Creative!</a></p>
 <p>²: To be honest the way I handled raytracing was horribly inefficient. I've made raytracers before so I know that they can be fast, it's just that I really could not care less about it. I wonder how many hours of simulation time I could've saved had I only made it slightly more optimized by just adding a spatial grid or something</p>
 <p>³: After reproduction each goober had a small chance to mutate their neural-network and/or delete/add/modify one of their cells.</p>
 <p>⁴: I felt like a genius coming up with this idea, though I have no idea if the neural networks ever used it. It's basically just 12 floats that get passed into the neural-network and then are preserved for the next iteration. Yes, that's what I called &quot;memory&quot;. You know, so they could store information about life's most important questions such as &quot;Is this food?&quot;, &quot;Is this enemy?&quot;, &quot;Am I food?&quot;, etc.</p>
@@ -187,7 +187,7 @@ Or if you would like to fork around <a href="https://github.com/todaymare/evolut
     </nav>
     </div>
 
-    <a class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">
+    <a target="_blank" rel="noopener noreferrer" class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">
         <img src="../../kofi_symbol.svg" alt="Buy me a coffee on Ko-fi" width="64" height="64">
     </a>
 

@@ -98,12 +98,12 @@
         <article>
             <p>After 4 years with Rust, I love the language – but I’m starting to think the ecosystem has an abstraction addiction. Or: why every Rust crate feels like a research paper on abstraction.</p>
 <p>Hi, it’s me again. Back at it with another rant thinly disguised as a &quot;think piece.&quot;</p>
-<h2>The Question Nobody Wants to Answer</h2>
+<h2 id="the-question-nobody-wants-to-answer">The Question Nobody Wants to Answer</h2>
 <p>Have you ever wanted to build something simple in Rust?
 Maybe you reach for <code>bevy</code>, or <code>wgpu</code>, or some other library that promises everything you didn't ask for.</p>
 <p>And then you hit that moment – you're debugging, you hit &quot;Go to Definition&quot;, and suddenly you're free falling through ten layers of traits, macros, and generics just to figure out how a buffer updates.</p>
 <p>If that sounds familiar, congratulations: you've met Rust's favourite pastime – abstraction as performance art.</p>
-<h2>Why Are We Like This?</h2>
+<h2 id="why-are-we-like-this">Why Are We Like This?</h2>
 <p>I get it – abstractions are cool. They’re supposed to hide complexity so we can focus on cooler stuff. And Rust loves that idea. Traits, generics, lifetimes – layer upon layer of &quot;don’t worry about it honey.&quot;</p>
 <p>Take <code>nalgebra</code>. Fantastic crate – powerful, flexible, and deeply overqualified for 90% of use cases.</p>
 <p>It’s not that I hate nalgebra – it’s brilliant. I just hate that this kind of maximalism has become the default.</p>
@@ -115,8 +115,8 @@ That’ll be three trait bounds, one custom derive, and a spiritual journey thro
 <p>And that’s the real cost of abstraction – it makes the ceiling higher, but it also makes the floor invisible. (Shakespeare got nothin’ on me)</p>
 <p>The real tragedy? Once you see it, you start writing that way too.
 You start thinking, &quot;Well, maybe I should make this generic in case someone wants to use quaternions instead of matrices...&quot; and suddenly, congratulations – you're building for someone who doesn't exist.</p>
-<h2>Rust, the Language</h2>
-<p>Rust is a great language. I’ll be the first to say that. It’s not perfect – no language is except <a href="https://github.com/todaymare/margarine" target="_blank" rel="noopener noreferrer">margarine</a> – but it’s the tool I reach for first.</p>
+<h2 id="rust-the-language">Rust, the Language</h2>
+<p>Rust is a great language. I’ll be the first to say that. It’s not perfect – no language is except <a target="_blank" rel="noopener noreferrer" href="https://github.com/todaymare/margarine">margarine</a> – but it’s the tool I reach for first.</p>
 <p>That said, the Rust ecosystem feels like it's divided into two sides. (Ironic, isn’t it?)</p>
 <p>On one side, you’ve got artists. The folks who treat Rust like an art form – every crate is a masterpiece of generics, lifetimes, and zero-cost abstractions. They push the language to its limits, and honestly? It’s incredible to watch.</p>
 <p>On the other side are the people trying to ship things, the ones who’d use Zig if it weren’t allergic to syntactic sugar. They don’t care about elegance or clever abstractions – they just want their code to compile before they age into retirement.</p>
@@ -133,7 +133,7 @@ The problem is when we build for someday instead of today.</p>
 <p>I’m not saying stop writing clever code – just make sure it earns its keep. When you feel that &quot;maybe I should make this generic&quot; impulse, ask: Who benefits from this, today?
 If the answer is &quot;future me,&quot; maybe wait until future you actually shows up.</p>
 <p>Here’s my rule of thumb: <strong>keep &quot;Go to Definition&quot; useful.</strong></p>
-<h1>The Conclusion</h1>
+<h1 id="the-conclusion">The Conclusion</h1>
 <p>I've been on both sides of the extreme. Heck, my first time trying to learn OpenGL I tried to write a compile-time zero-cost abstraction for it while I was learning it. Later, I just went with raw OpenGL in a dozen different projects.
 So, yeah, I've lived both sides of the story.</p>
 <p>From that experience, I've learned one thing: things are almost always easier when there are fewer moving parts. Simpler code doesn't mean worse code – it just means you can still understand it six months later.</p>
@@ -142,7 +142,7 @@ So, yeah, I've lived both sides of the story.</p>
 <p>But for now, I just wanted to encourage maybe one person to try to write code that's just code... not abstracted, not filled with traits or generics... just code.</p>
 <p>Maybe one day the novelty will wear off, and Rust will chill out.</p>
 <p>Until then, I'll be over here using <code>glam</code>.</p>
-<p>If you enjoyed this post, I'd love it if you could whisper 'nice post' at your screen... <a href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">or drop me a coffee</a></p>
+<p>If you enjoyed this post, I'd love it if you could whisper 'nice post' at your screen... <a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/todaymare">or drop me a coffee</a></p>
 <p>P.S grammarly forked me over vro 🥀</p>
         </article>
     </main>
@@ -154,7 +154,7 @@ So, yeah, I've lived both sides of the story.</p>
     </nav>
     </div>
 
-    <a class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">
+    <a target="_blank" rel="noopener noreferrer" class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">
         <img src="../../kofi_symbol.svg" alt="Buy me a coffee on Ko-fi" width="64" height="64">
     </a>
 

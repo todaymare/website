@@ -117,5 +117,3 @@ A language that feels like Rust, but without the fights I used to lose with the 
 Was this post just a big ad for *margarine*? It certainly wasn't the intention but after four years it feels good to finally share something that works, and it couldn't hurt to [check it out](https://github.com/todaymare/margarine) can it?
 
 and hey, if it resonated with you [consider dropping me a coffee](https://ko-fi.com/todaymare)
-
-PS: I’ve seen a few people mention they’d have liked a more technical deep dive, totally fair. This post was always meant as a story of the journey, not the implementation, but don’t worry: a detailed, technical write-up is already in the works. Thanks to everyone who read and shared feedback, seriously appreciate it.

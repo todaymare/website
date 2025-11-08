@@ -105,7 +105,7 @@ Factorio, but bigger! And better!</p>
 Don't be ridiculous, of course not!</p>
 <p>The plan: mix Factorio’s automation, Terraria’s boss fights, and a Minecraft-esque voxel world.
 So I said, considering I have no graphics development experience I should start simple – and make a voxel engine</p>
-<h2>The Prototype</h2>
+<h2 id="the-prototype">The Prototype</h2>
 <blockquote>
 <p>All good games need a prototype<br />
 - Sun Tzu</p>
@@ -126,7 +126,7 @@ It might sound like I'm glossing over the implementation, but the entire prototy
 <p>Anyways, I was ready. I had spent roughly 32 hours over 2 days working on the first prototype of my life. I went outside to grab some food, came back, and even arranged a play-test for the next day.</p>
 <p>Everything was perfect.<br />
 The engine worked. The game ran smoothly – until it didn't.</p>
-<h3>Things go VERY WRONG</h3>
+<h3 id="things-go-very-wrong">Things go VERY WRONG</h3>
 <p>Look, I'm lucky enough to have a great computer. During my testing I couldn't even get the game to go below 144FPS.<br />
 But see, I never tried throwing more quarries at it because I assumed any slow-down would come from the naturally expensive thing – the rigidbodies that I used for items.</p>
 <p>In order for this to make sense I need to show you how procedurally generating a chunk goes in Godot.</p>
@@ -134,7 +134,7 @@ But see, I never tried throwing more quarries at it because I assumed any slow-d
 In the simplest voxel engines, you’d generate a quad for every block face — slow, but simple.
 For the prototype, I added a very naive culling algorithm so it wouldn’t generate hidden faces.</p>
 <p>So far so good. This entire algorithm was implemented in Rust (<em>blazing fast!</em>).</p>
-<p>Godot exposes a type called <a href="https://docs.godotengine.org/en/stable/classes/class_surfacetool.html" target="_blank" rel="noopener noreferrer">SurfaceTool</a>, which isn't technically the lowest-level API they provide but it is pretty much a drop-in replacement for pushing individual vertices into a list.</p>
+<p>Godot exposes a type called <a target="_blank" rel="noopener noreferrer" href="https://docs.godotengine.org/en/stable/classes/class_surfacetool.html">SurfaceTool</a>, which isn't technically the lowest-level API they provide but it is pretty much a drop-in replacement for pushing individual vertices into a list.</p>
 <p>Anyway, here’s how that looked in code – calling into Godot from Rust, in order to draw a quad:</p>
 <pre><code class="language-rust">fn draw_quad(st: &amp;mut SurfaceTool, k: &amp;mut i32, quad: Quad) {
     let normal = match quad.direction {
@@ -179,7 +179,7 @@ For the prototype, I added a very naive culling algorithm so it wouldn’t gener
     *k += 4;
 }
 </code></pre>
-<p>You might notice there’s not much difference, so really, how bad could <a href="https://docs.godotengine.org/en/stable/classes/class_surfacetool.html" target="_blank" rel="noopener noreferrer">SurfaceTool</a> be?</p>
+<p>You might notice there’s not much difference, so really, how bad could <a target="_blank" rel="noopener noreferrer" href="https://docs.godotengine.org/en/stable/classes/class_surfacetool.html">SurfaceTool</a> be?</p>
 <p>8 milliseconds per chunk! Not terrible – until you realize doing it manually takes 300 microseconds. Twenty-seven times faster.</p>
 <p>And that’s not even counting Godot’s mesh conversion time, which I’m pretty sure happens way later.</p>
 <p>At this point you can probably guess what went wrong.
@@ -189,7 +189,7 @@ Simple, I was doing things efficiently. I already knew what to build, nothing we
 He, on the other hand, decided to cover the planet in quarries (like, five quarries).</p>
 <p>After it dropped to 10 FPS, he stopped playing. Which, fair.<br />
 I still count an hour-long playtest as a win – but the reason he stopped playing was... traumatizing.</p>
-<h1>The Rebound</h1>
+<h1 id="the-rebound">The Rebound</h1>
 <p>The prototype was a success, somewhat.<br />
 So now it was time to make the actual game, properly this time.</p>
 <p>After that Godot fiasco I decided I'd just go pure Rust.</p>
@@ -215,15 +215,15 @@ Now, after coming from Godot my perception of performance was so ruined that I w
 <p>Luckily for me, I am not skilled enough to be able to write an algorithm that's able to heavily cache it so I decided to settle for just reconstructing the entire graph every frame. And guess what? It never became a performance problem.</p>
 <p>Well that was simple enough, I'll also mention the things that happened after all of that.<br />
 I went on a 3 week journey to optimize the heck out of the voxel engine, during which I switched from OpenGL to WGPU because OpenGL on MacOS does not support Shader Storage Buffer Objects (SSBOs)</p>
-<p>I might make a post on how I optimized the voxel engine (<a href="https://www.youtube.com/watch?v=40JzyaOYJeY" target="_blank" rel="noopener noreferrer">check out this video by Vercidium</a>) but by the end of it I had a voxel engine with async chunk &amp; mesh generation, running at 144FPS+ on an M2 MacBook using 3 GB of ram with a render distance of 3072 blocks in every direction.</p>
+<p>I might make a post on how I optimized the voxel engine (<a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=40JzyaOYJeY">check out this video by Vercidium</a>) but by the end of it I had a voxel engine with async chunk &amp; mesh generation, running at 144FPS+ on an M2 MacBook using 3 GB of ram with a render distance of 3072 blocks in every direction.</p>
 <p><img src="assets/voxel-engine.png" alt="Voxel Engine Picture" /></p>
-<h1>The conclusion?</h1>
+<h1 id="the-conclusion">The conclusion?</h1>
 <p>I can't say this story has a very good conclusion because the game never ended up getting finished. Mostly because I couldn't figure out a way to make a factory game feel nice to play in a 3D voxel sandbox.</p>
 <p>What I learned from all this wasn’t really about Godot or performance – it was about trust. Or the lack of it.</p>
 <p>I thought I was writing about slow code, but looking back, I was really writing about black boxes I couldn’t see inside.</p>
 <p>After going cold-turkey on abstractions, I realized something worse than inefficiency: bloat. It turns out working in a simple, honest codebase – one where you see everything – is just more fun.</p>
-<p>For those who may want to check out the source code for the final version of the game <a href="https://github.com/todaymare/factory-game" target="_blank" rel="noopener noreferrer">here you go</a></p>
-<p>Maybe there's a conclusion to draw from this story, in any case I hope you enjoyed it. And if you did, consider <a href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">buying me a cup of coffee</a></p>
+<p>For those who may want to check out the source code for the final version of the game <a target="_blank" rel="noopener noreferrer" href="https://github.com/todaymare/factory-game">here you go</a></p>
+<p>Maybe there's a conclusion to draw from this story, in any case I hope you enjoyed it. And if you did, consider <a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/todaymare">buying me a cup of coffee</a></p>
         </article>
     </main>
 
@@ -234,7 +234,7 @@ I went on a 3 week journey to optimize the heck out of the voxel engine, during 
     </nav>
     </div>
 
-    <a class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">
+    <a target="_blank" rel="noopener noreferrer" class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">
         <img src="../../kofi_symbol.svg" alt="Buy me a coffee on Ko-fi" width="64" height="64">
     </a>
 

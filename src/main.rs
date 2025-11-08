@@ -262,7 +262,7 @@ fn main() {
             output
         };
 
-        // replace all aref links to open a new tab except the home class link
+        // replace all aref links to open a new tab except the home class link & links to headers (ones that don't have http/https or ./)
         let template = {
             let mut output = String::new();
             let mut chars = template.chars().peekable();
@@ -276,15 +276,17 @@ fn main() {
                             break;
                         }
                     }
-                    if tag.contains("<a") && tag.contains("href=\"") && !tag.contains("class=\"home\"") {
-                        // insert target="_blank" rel="noopener noreferrer"
-                        let insert_pos = tag.find('>').unwrap();
-                        let (start, end) = tag.split_at(insert_pos);
-                        let new_tag = format!(
-                            "{} target=\"_blank\" rel=\"noopener noreferrer\"{}",
-                            start, end
-                        );
-                        output.push_str(&new_tag);
+                    if tag.contains("<a") && tag.contains("href=\"") {
+                        // extract href
+                        let href_start = tag.find("href=\"").unwrap() + 6;
+                        let href_end = tag[href_start..].find('"').unwrap() + href_start;
+                        let href = &tag[href_start..href_end];
+                        if (href.starts_with("http://") || href.starts_with("https://") || href.starts_with(".")) && !tag.contains("class=\"home\"") {
+                            let new_tag = tag.replacen("<a", "<a target=\"_blank\" rel=\"noopener noreferrer\"", 1);
+                            output.push_str(&new_tag);
+                        } else {
+                            output.push_str(&tag);
+                        }
                     } else {
                         output.push_str(&tag);
                     }
@@ -295,6 +297,37 @@ fn main() {
             output
         };
 
+
+        // generate ids for all headers
+        let template = {
+            let mut output = String::new();
+            let mut lines = template.lines();
+            while let Some(line) = lines.next() {
+                if line.starts_with('<') && line.contains("<h") && line.contains('>') {
+                    let tag_start = line.find('<').unwrap();
+                    let tag_end = line.find('>').unwrap();
+                    let tag = &line[tag_start..=tag_end];
+                    if tag.starts_with("<h") && tag.len() >= 4 && tag.chars().nth(2).unwrap().is_digit(10) {
+                        // extract header text
+                        let closing_tag = format!("</{}>", &tag[1..tag.len()-1]);
+                        if let Some(closing_pos) = line.find(&closing_tag) {
+                            let header_text = &line[tag_end+1..closing_pos];
+                            let mut id = header_text.to_lowercase().replace(' ', "-");
+                            id.retain(|c| c.is_alphanumeric() || c == '-');
+                            let new_tag = format!("{} id=\"{}\">", &tag[..tag.len()-1], id);
+                            let new_line = line.replacen(tag, &new_tag, 1);
+                            output.push_str(&new_line);
+                            output.push('\n');
+                            continue;
+                        }
+                    }
+                }
+                output.push_str(line);
+                output.push('\n');
+            }
+            output
+        };
+        
         std::fs::write(format!("{ident}/index.html"), template).unwrap();
 
         // generate rss item

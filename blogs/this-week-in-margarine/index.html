@@ -97,7 +97,7 @@
     <main>
         <article>
             <p>A quick update on the progress of my programming language margarine. It's build system, why it won't have a JIT, and other design decisions.</p>
-<p>For those who don't know margarine, it's my programming language that's meant to be a replacement for Lua in my own projects, <a href="../four-years-five-failures-one-compiler/" target="_blank" rel="noopener noreferrer">check out this post</a> if you want to learn more about it.</p>
+<p>For those who don't know margarine, it's my programming language that's meant to be a replacement for Lua in my own projects, <a target="_blank" rel="noopener noreferrer" href="../four-years-five-failures-one-compiler/">check out this post</a> if you want to learn more about it.</p>
 <p>Hello! So here's the thing, this week I decided that I wanted to be done with margarine as soon as possible.
 But I'm also quite tired of having way too many unfinished projects, so I had to decide on a to-do list that I needed to finish before I could call margarine done. And before you click off, a JIT was in this to-do list until yesterday.</p>
 <p>Here, I'll show you the to-do list.</p>
@@ -109,9 +109,9 @@ But I'm also quite tired of having way too many unfinished projects, so I had to
 <li>stdlib</li>
 </ul>
 <p>So me being me I went with the one I have never done before, the JIT.</p>
-<h2>The JIT</h2>
+<h2 id="the-jit">The JIT</h2>
 <p>In a previous version of margarine I had used LLVM¹ to compile to native code and as far as I remember it was a horrible experience. Heck when I went back to margarine it didn't even compile even though literally nothing about my build system had changed.</p>
-<p>So this time I decided to use something easier, something shinier, something newer, something called <a href="https://cranelift.dev/" target="_blank" rel="noopener noreferrer">Cranelift</a>. Which claims to be faster than LLVM while admitting that it has less optimisations. That sounds like a good trade-off, right? It probably doesn't have many of the niche optimisations that LLVM has built up over the years but it has the important optimisations, right?</p>
+<p>So this time I decided to use something easier, something shinier, something newer, something called <a target="_blank" rel="noopener noreferrer" href="https://cranelift.dev/">Cranelift</a>. Which claims to be faster than LLVM while admitting that it has less optimisations. That sounds like a good trade-off, right? It probably doesn't have many of the niche optimisations that LLVM has built up over the years but it has the important optimisations, right?</p>
 <p>That sounded amazing! Not only did it mean that I didn't need to deal with LLVM's jankness but also that the JIT will compile code faster!</p>
 <p>Now, I don't need margarine's JIT to be perfect or even optimized. I just want to add a JIT to the runtime to make it faster and I want to get it over with quickly so I could move onto the next thing in the to-do list. So I just made the JIT convert my interpreter one-to-one.</p>
 <p>I think this'll make more sense if I showed some code, so let's take the <code>AddInt</code> instruction. (fyi, margarine's interpreter is a stack based interpreter)</p>
@@ -133,7 +133,7 @@ For one, I could switch to a register based VM which would immediately eliminate
 <p>There's many ways I could make this JIT thing work, but after talking to people I'm not sure if it's even worth it. Sure, it'd make things faster but there's a lot more I should be focusing on right now (many things that when implemented would probably require the JIT to be reworked anyways).</p>
 <p>So I moved onto the next item on the list.</p>
 <p>¹: Writing this some part of me wishes I never ditched compiling to native code. I know it was the right decision but the <em>speed</em> is very alluring especially now that I don't even have a JIT. Woman in the red dress or something I dunno.</p>
-<h2>The build system</h2>
+<h2 id="the-build-system">The build system</h2>
 <p>This part of margarine has gone through a few iterations already. At the start, I just had to specify every single file I wanted to include in the CLI tool, which led to commands like</p>
 <pre><code>margarine std std/duration std/list std/rand raylib raylib/keys raylib/window flappy_bird
 </code></pre>
@@ -167,17 +167,17 @@ fn main() {
 </code></pre>
 <p>in the middle of the program. This would allow me to not have a build system, but I'm not sure. I'll have to think more about this whole build system thing.</p>
 <p>It's kind of annoying to constantly be working on things that aren't guaranteed to be finished, so I just decided to quickly write up something that's very important and is pretty much as complete as I'll ever make it be</p>
-<h2>The GC</h2>
+<h2 id="the-gc">The GC</h2>
 <blockquote>
 <p>is garbage collection just a metaphor for letting go?<br />
 - William Shakespeare</p>
 </blockquote>
 <p>We're coming to the end of the week and while I have experimented with a lot of things I wouldn't call those two complete just yet. However, the garbage collection for margarine is complete. It's definitely not the fastest or the most optimal but it does clean up garbage when needed so it's fine.</p>
-<p>What I did you might ask? I just copy-pasted the garbage collection I had for my old project <a href="https://github.com/todaymare/azurite" target="_blank" rel="noopener noreferrer">azurite</a>. I know I know lame! It's just a basic mark &amp; sweep world-stopping tracing garbage collector.</p>
+<p>What I did you might ask? I just copy-pasted the garbage collection I had for my old project <a target="_blank" rel="noopener noreferrer" href="https://github.com/todaymare/azurite">azurite</a>. I know I know lame! It's just a basic mark &amp; sweep world-stopping tracing garbage collector.</p>
 <p>There isn't much to say about it. It just goes through the stack, marks objects as live and then kills any that are dead. Oh and I guess it's only called when you fail to allocate an object.</p>
-<h2>End of the Week</h2>
+<h2 id="end-of-the-week">End of the Week</h2>
 <p>Anyway, that's where margarine stands this week. A tiny bit more of a real boy.</p>
-<p>Thank you for reading so far and if you enjoyed this post or have feedback on any of the design decisions I talked above consider joining <a href="https://discord.gg/t7gNX8Kp72" target="_blank" rel="noopener noreferrer">my discord server</a>, or you can e-mail me at <a href="mailto:contact@daymare.net" target="_blank" rel="noopener noreferrer">contact@daymare.net</a>. Or if you really enjoyed it, consider <a href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">buying me a cup of coffee</a></p>
+<p>Thank you for reading so far and if you enjoyed this post or have feedback on any of the design decisions I talked above consider joining <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/t7gNX8Kp72">my discord server</a>, or you can e-mail me at <a href="mailto:contact@daymare.net">contact@daymare.net</a>. Or if you really enjoyed it, consider <a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/todaymare">buying me a cup of coffee</a></p>
         </article>
     </main>
 
@@ -188,7 +188,7 @@ fn main() {
     </nav>
     </div>
 
-    <a class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">
+    <a target="_blank" rel="noopener noreferrer" class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">
         <img src="../../kofi_symbol.svg" alt="Buy me a coffee on Ko-fi" width="64" height="64">
     </a>
 

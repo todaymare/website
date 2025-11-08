@@ -1,5 +1,727 @@
 <?xml version="1.0"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>daymare.net</title><id>https://daymare.net/</id><updated>2025-11-05T12:12:36.626280+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><link href="https://daymare.net/" rel="self"/><entry><title>So I became God: Artificial Life</title><id>https://daymare.net/blogs/artificial-life</id><updated>2025-11-02T07:50:02.679417958+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/artificial-life" rel="alternate"/><published>2025-11-02T07:50:02.679417958+00:00</published><summary>&lt;p&gt;Let me take you through a journey of curiosity, growth, and cannibalism. One inspired by a video game and some questionable media..&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let me take you through a journey of curiosity, growth, and cannibalism. One inspired by a video game and some questionable media..&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>daymare.net</title><id>https://daymare.net/</id><updated>2025-11-08T08:59:20.525546+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><link href="https://daymare.net/" rel="self"/><entry><title>Voxel Engine in a Weekend</title><id>https://daymare.net/blogs/voxel-engine-in-a-weekend</id><updated>2025-11-08T08:59:03.535128220+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/voxel-engine-in-a-weekend" rel="alternate"/><published>2025-11-08T08:59:03.535128220+00:00</published><summary>&lt;p&gt;It feels like everyone who learns how to make a voxel-engine learns it through sheer osmosis of information, so let&apos;s change that. Come along, let&apos;s make you a voxel engine!&lt;/p&gt;</summary><content type="html">&lt;p&gt;It feels like everyone who learns how to make a voxel-engine learns it through sheer osmosis of information, so let&apos;s change that. Come along, let&apos;s make you a voxel engine!&lt;/p&gt;
+&lt;h2&gt;Overview&lt;/h2&gt;
+&lt;p&gt;Hello, are you ready? Because we&apos;re going to take you from a single cube to an entire voxel engine!&lt;br /&gt;
+Here&apos;s what you&apos;ll need to bring:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Your own language&lt;/strong&gt;! All the code examples are in pseudocode so unless you write a compiler for it you&apos;re not going to be able to copy paste it anyways, so pick something you like.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Your own rendering API&lt;/strong&gt;! Pick whatever you want, this isn&apos;t a rendering tutorial.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you have any questions during the process feel free to reach out to me on &lt;a href=&quot;https://discord.gg/t7gNX8Kp72&quot;&gt;my discord server&lt;/a&gt; or contact me at &lt;a href=&quot;mailto:contact@daymare.net&quot;&gt;contact@daymare.net&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you&apos;re set, grab a drink and let&apos;s do this!&lt;/p&gt;
+&lt;h2&gt;Maybe this should&apos;ve been before Overview&lt;/h2&gt;
+&lt;p&gt;Here&apos;s the contents of this post since I assume it&apos;ll be quite long.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#hello-cube&quot;&gt;Hello, cube&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#meshes-and-chunks&quot;&gt;Meshes and Chunks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#world-generation&quot;&gt;World Generation&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#voxel-types&quot;&gt;Voxel Types&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#physics&quot;&gt;Physics&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#raycasting&quot;&gt;Raycasting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#aabb-collision&quot;&gt;AABB Collision&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#one-last-thing&quot;&gt;One last thing..&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#the-end&quot;&gt;The End?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#or-is-it&quot;&gt;..or is it?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Hello, cube&lt;/h2&gt;
+&lt;p&gt;I&apos;m not planning on making the rest of the post so undetailed but rendering a cube is mostly a graphics task and if you&apos;re using OpenGL you only need to read 6 pages from &lt;a href=&quot;https://learnopengl.com/Getting-started/Creating-a-window&quot;&gt;LearnOpenGL&lt;/a&gt; to get to this point. So I&apos;ll assume you can handle this on your own.&lt;/p&gt;
+&lt;p&gt;By the end of it you should roughly have a function &lt;code&gt;draw_cube&lt;/code&gt; that takes in a &lt;code&gt;Vec3&lt;/code&gt; position and draws a cube there.
+Here&apos;s mine:
+&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/draw-a-cube.png&quot; alt=&quot;A cube&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;And now, all that&apos;s left to do is place more cubes everywhere! A simple for loop should suffice&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;for z in 0..32 {
+    for x in 0..32 {
+        draw_cube(Vec3::new(x, 0, z));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This should give us a one voxel tall 32x32 rectangle.
+&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/32x32-platform.png&quot; alt=&quot;32x32 Platform&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Now, instead of doing the for loop every time, let&apos;s put our voxels in a data structure and call it our &lt;code&gt;World&lt;/code&gt;.&lt;br /&gt;
+We can put a HashSet of positions here to know what world coordinates have a voxel.&lt;/p&gt;
+&lt;p&gt;Now depending on what programming language you&apos;re using you might not be able to put &lt;code&gt;Vec3&lt;/code&gt; in a HashSet.
+And even if you can, we should still be converting our float-based &lt;code&gt;Vec3&lt;/code&gt; into an integer-based &lt;code&gt;IVec3&lt;/code&gt; as that&apos;ll allow us to ensure that voxels are aligned to a grid. Which is important for foreshadowing reasons.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;struct World {
+    voxels: HashSet&amp;lt;IVec3&amp;gt;,
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then, all we need to do is populate our world at the start&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;for z in 0..32 {
+    for x in 0..32 {
+        world.voxels.insert(IVec3::new(x, 0, z))
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then every frame we can render our world like so&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;for voxel_pos in world.voxels {
+    draw_cube(voxel_pos);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After all that you should have.. the exact same scene! But now we can do funky stuff like adding a random cube in the middle of nowhere by just adding it to our &lt;code&gt;World&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;world.voxels.insert(IVec3::new(7, 2, 13))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/random-block.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can even add and remove blocks at runtime. Let&apos;s make it so when we press &lt;code&gt;Space&lt;/code&gt; the block we&apos;re standing in is created if it doesn&apos;t exist and removed if it does&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;if input.is_key_pressed(Key::Space) {
+    var position = camera.position.as_ivec3();
+    if world.voxels.exists(position) {
+        world.voxels.remove(position);
+    } else {
+        world.voxels.insert(camera.position.as_ivec3())
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now I encourage you to go experiment with this a bit; maybe change the dimensions of the initial platform, add weird structures etc. before continuing on.&lt;/p&gt;
+&lt;h2&gt;Meshes and Chunks&lt;/h2&gt;
+&lt;p&gt;If you&apos;ve tried to increase the platform&apos;s size you might&apos;ve noticed that the performance suffers greatly. This is because if you implemented the &lt;code&gt;draw_cube&lt;/code&gt; function as naively as I have (without instancing) you&apos;ll be uploading &amp;amp; drawing &lt;code&gt;36*voxel_count&lt;/code&gt; vertices every frame. Which is a lot of data to be uploading to the GPU every frame.&lt;/p&gt;
+&lt;p&gt;What we can do is create a single Mesh for our world and only upload that once at the start.
+To do that we&apos;ll first need to add a Mesh to our world&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;struct World {
+    voxels: HashSet&amp;lt;IVec3&amp;gt;,
+    mesh: Mesh?,
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The &lt;code&gt;?&lt;/code&gt; means that the Mesh can be none, this is because we won&apos;t have a Mesh at the start of the program.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;and then when rendering we will&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;if world.mesh != none {
+    draw_mesh(world.mesh);
+} else {
+    create_mesh(world);
+    draw_mesh(world.mesh);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and &lt;code&gt;create_mesh&lt;/code&gt; would look something like&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn create_mesh(world: &amp;amp;World) {
+    var vertices = [];
+
+    for voxel_pos in world.voxels {
+        draw_cube(vertices, voxel_pos);
+    }
+
+    world.mesh = Mesh::from_vertices(vertices);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;so now if you run it you should once again get the exact same scene. But! you might have noticed that now you can&apos;t modify the world anymore.&lt;/p&gt;
+&lt;p&gt;Ah, the joys of engine development. What we have done is cache our world Mesh on the first frame, but currently we don&apos;t have a way of invalidating it.&lt;br /&gt;
+Which means even after we modify our HashSet we will be drawing the cached Mesh from the first frame.&lt;/p&gt;
+&lt;p&gt;Sounds intimidating but all we need to do is go back to our world modification code and set &lt;code&gt;world.mesh&lt;/code&gt; to none&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;if input.is_key_pressed(Key::Space) {
+    world.mesh = none;
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Voilà!&lt;/p&gt;
+&lt;p&gt;Now we finally have the same thing we had 5 minutes ago.&lt;/p&gt;
+&lt;p&gt;Before we were drawing the entire world block by block, now we are drawing the entire world at once which comes with a brand new problem of its own, we need to rebuild the entire world whenever a single block changes.&lt;/p&gt;
+&lt;p&gt;Which sounds fine when our world is 32x32 but at something like 2048x2048? That&apos;s over four million cubes to rebuild just because one changed.&lt;/p&gt;
+&lt;p&gt;This leads to the second buzzword of this section: Chunks&lt;/p&gt;
+&lt;p&gt;But before we move onto that let&apos;s introduce a &lt;code&gt;flip_voxel&lt;/code&gt; function on our World to make our job a bit more convenient.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn flip_voxel(world: &amp;amp;World, position: IVec3) {
+    world.mesh = none;
+    if world.voxels.contains(position) {
+        world.voxels.remove(position);
+    } else {
+        world.voxels.insert(position.as_ivec3())
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then we can switch out our input to&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;if input.is_key_pressed(Key::Space) {
+    flip_voxel(world, camera.position);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Basically, instead of treating the entire world as one giant data structure we split it up into smaller pieces called chunks.&lt;br /&gt;
+Each chunk is just a mini-world, let&apos;s say 32x32x32 blocks big (the exact size doesn&apos;t really matter)&lt;/p&gt;
+&lt;p&gt;When you place or remove a block, you don&apos;t rebuild the whole world but instead just rebuild the chunk that the block is in.&lt;/p&gt;
+&lt;p&gt;Basically, we&apos;re building the world out of a bunch of tiny worlds that all work independently, which allows us to change one of them without changing all the others.&lt;/p&gt;
+&lt;p&gt;[a 2d image that shows a world being a single chunk vs split up into a 32x32 chunks]&lt;/p&gt;
+&lt;p&gt;All we need to do for implementing it is modify our World so that instead of storing every voxel in one big HashSet we&apos;ll group them by which chunk they belong to. Each chunk keeps track of its own voxels, and the world just tracks which chunks exist. We will also remove the mesh field from our world and move it to its chunk.&lt;/p&gt;
+&lt;p&gt;For all practical purposes we&apos;re just renaming our World into Chunk and creating a new World type.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;struct World {
+    chunks: HashMap&amp;lt;IVec3, Chunk&amp;gt;, // !!
+}
+
+struct Chunk {
+    voxels: HashSet&amp;lt;IVec3&amp;gt;,
+    mesh: Mesh?,                   // !!
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For my implementation I&apos;ll say that a Chunk will start on (0, 0, 0) and end at (32, 32, 32). And our World will store our Chunks in chunk-space.&lt;/p&gt;
+&lt;p&gt;That means that the Chunk at (1, 5, 3) will span voxels from (1x32..2x32, 5x32..6x32, 3x32..4x32).&lt;/p&gt;
+&lt;p&gt;In order to convert from a world-position to a chunk position &amp;amp; a local position we&apos;ll need to do some math on it. We can divide our world-position by our chunk size (32) to get the position of the chunk that world position is in. Then we take the remainder (or modulus) of our world position by our chunk size (32) to find the chunk local position.&lt;/p&gt;
+&lt;p&gt;However there&apos;s something subtle but important we need to be wary of, negative numbers.&lt;/p&gt;
+&lt;p&gt;Take the world position (-7, 0, 0) for example, we want it to be on chunk (-1, 0, 0) with a local offset of (7, 0, 0). But in most programming languages if you just did what we talked about above you would get a chunk position of (0, 0, 0) with a local offset of (-7, 0, 0). The problem is that the chunk at (0, 0, 0) is double the size of all other chunks.&lt;/p&gt;
+&lt;p&gt;That&apos;s kind of annoying, in order to solve this we can use the euclidian versions of these operations, also known as floor division/remainder.&lt;/p&gt;
+&lt;p&gt;So let&apos;s look at how we&apos;ll need to change our &lt;code&gt;flip_voxel&lt;/code&gt; function&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn flip_voxel(world: &amp;amp;World, position: IVec3) {
+    var chunk_position = position.div_euclid(32);
+    var local_position = position.rem_euclid(32);
+
+    var chunk = get_or_create_chunk(world, chunk_position);
+
+    chunk.mesh = none;
+    if chunk.voxels.contains(local_position) {
+        chunk.voxels.remove(local_position);
+    } else {
+        chunk.voxels.insert(local_position.as_ivec3())
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We&apos;ll need to create a &lt;code&gt;get_or_create_chunk&lt;/code&gt; function, this&apos;ll make more sense later&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn get_or_create_chunk(world: &amp;amp;World, chunk_position: IVec3): &amp;amp;Chunk {
+    if !world.chunks.contains(chunk_position) {
+        world.chunks.insert(chunk_position, Chunk { mesh: none, voxels: HashSet::new() } )
+    }
+
+    return world.chunks.get(chunk_position)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Of course, we&apos;ll also need to remove the &lt;code&gt;create_mesh&lt;/code&gt; function for our World and make one for our chunks. Okay I lied we&apos;re just gonna change the type parameter from World to Chunk.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn create_mesh(chunk: &amp;amp;Chunk) {
+    var vertices = [];
+
+    for voxel_pos in chunk.voxels {
+        draw_cube(vertices, voxel_pos);
+    }
+
+    chunk.mesh = Mesh::from_vertices(vertices);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then update our rendering code. When rendering we&apos;ll need to offset the mesh by &lt;code&gt;chunk_pos x chunk_size&lt;/code&gt;. Because, yk, we&apos;re just tiling these chunks.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;for chunk_pos, chunk in world.chunks {
+    var offset = chunk_pos * 32;
+    if chunk.mesh != none {
+        draw_mesh(chunk.mesh, offset);
+    } else {
+        create_mesh(chunk);
+        draw_mesh(chunk.mesh, offset);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I almost forgot, but we also need to change how we populated our world at the start&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;for z in 0..32 {
+    for x in 0..32 {
+        world.flip_voxel(IVec3::new(x, 0, z));
+    }
+}
+
+world.flip_voxel(IVec3::new(7, 2, 13));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;so for, hopefully but not likely, the last time we finally have the same thing we had 15 minutes ago.
+&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/different-angle-lmao.png&quot; alt=&quot;Different Angle&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;phew, well that was a lot of work for not much visual pay-off huh?&lt;br /&gt;
+I should probably take you through optimizing the mesh generation but before that, how about we take a look at some basic world generation instead?&lt;/p&gt;
+&lt;h2&gt;World Generation&lt;/h2&gt;
+&lt;p&gt;So the simplest world-generation might work with just making a flat platform on a certain Y-level, and with the setup we have it&apos;ll be trivial!&lt;/p&gt;
+&lt;p&gt;The first thing we&apos;ll need to do is modify our &lt;code&gt;get_or_create_chunk&lt;/code&gt; function (see I told you it&apos;d be important later!)&lt;/p&gt;
+&lt;p&gt;So far it&apos;s been responsible for creating empty chunks when we needed them. But now we can start to use it to also generate those chunks when needed.&lt;br /&gt;
+Whenever a new chunk is generated, we&apos;ll stuff it with some terrain. In this case that terrain is just &amp;quot;flat&amp;quot;.
+It&apos;s not glamorous but hey, something something Rome wasn&apos;t built in a day and I did say this is going to take a weekend.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn get_or_create_chunk(world: &amp;amp;World, chunk_position: IVec3): &amp;amp;Chunk {
+    if !world.chunks.contains(chunk_position) {
+        
+        var voxels = HashSet::new();
+        if chunk_position.y == 0 {
+            for z in 0..32 {
+                for x in 0..32 {
+                    voxels.insert(IVec3::new(x, 0, z));
+                }
+            }
+        }
+
+        world.chunks.insert(chunk_position, Chunk { mesh: none, voxels } )
+    }
+
+    return world.chunk.get(chunk_position)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you just ran this code you might&apos;ve noticed that the world is looking kinda empty .
+That&apos;s because we don&apos;t generate any chunks that aren&apos;t being modified and so to fix this we need to introduce the concept of a render distance.&lt;/p&gt;
+&lt;p&gt;The idea is simple: pick a radius around the camera and touch &apos;em all.&lt;/p&gt;
+&lt;p&gt;I could bore you with a dozen different ways to do this efficiently, or we can just touch everything every frame. Which is fine, probably.&lt;/p&gt;
+&lt;p&gt;So let&apos;s go back to our rendering loop and tweak it.
+We need to offset our radius so that it&apos;s around the camera, in order to do that we can just offset it by the chunk the camera is in.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;var radius = 4;
+
+var camera_chunk = camera.position.div_euclid(32);
+
+for y in -radius..radius {
+    for z in -radius..radius {
+        for x in -radius..radius {
+            var chunk_offset = IVec3(x, y, z);
+            var chunk_pos = camera_chunk + chunk_offset;
+
+            var chunk = get_or_create_chunk(world, chunk_pos);
+            
+            var offset = chunk_pos * 32;
+            if chunk.mesh != none {
+                draw_mesh(chunk.mesh, offset);
+            } else {
+                create_mesh(chunk);
+                draw_mesh(chunk.mesh, offset);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And there it is! A flat, infinite plane. Not much to look at, but hey, at least it’s not the same thing we’ve been staring at for the past few sections.&lt;br /&gt;
+&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/flat-world-gen-with-hole.png&quot; alt=&quot;Flat World Generation with Hole&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Except, do you see that giant hole too? Okay so that&apos;s our old &amp;quot;world generation&amp;quot; code sort of colliding with our new one. We can just remove that part and be fine.&lt;br /&gt;
+&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/flat-world-gen-without-hole.png&quot; alt=&quot;Flat World Generation without Hole&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;I think this might be the perfect time to take a tiny detour and talk about Voxel types.&lt;/p&gt;
+&lt;h3&gt;Voxel Types&lt;/h3&gt;
+&lt;p&gt;So far our world has been made up of a HashSet of voxels where a voxel either exists or it doesn&apos;t, but that&apos;s kinda boring so let&apos;s give our voxels some personality.&lt;/p&gt;
+&lt;p&gt;We&apos;ll start by creating an enum called &lt;code&gt;VoxelKind&lt;/code&gt;. You can obviously call it whatever you want. Bonus brownie points if you call it &lt;code&gt;WoahThisIsVeryCool&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;enum VoxelKind {
+    Dirt,
+    Stone
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then replace our HashSet with a HashMap&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;struct Chunk {
+    voxels: HashMap&amp;lt;IVec3, VoxelKind&amp;gt;, // !!
+    mesh: Mesh?,
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We&apos;ll still treat the absence of a value as air/nothing.&lt;br /&gt;
+But yeah, that&apos;s basically all we need to do in order to support multiple voxel types.&lt;br /&gt;
+Apart from, you know, the dozen or so spots in our code that will now immediately break.&lt;/p&gt;
+&lt;p&gt;Let&apos;s take it from the top of my file.&lt;br /&gt;
+First, we need to change our &lt;code&gt;flip_voxel&lt;/code&gt; function alongside renaming it because well, you can&apos;t really flip a Dirt block can you? I&apos;ll rename it to &lt;code&gt;set_voxel&lt;/code&gt; or something.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn set_voxel(world: &amp;amp;World, position: IVec3, kind: VoxelKind?) { // !!
+    var chunk_position = position.div_euclid(32);
+    var local_position = position.rem_euclid(32);
+
+    var chunk = get_or_create_chunk(world, chunk_position);
+
+    chunk.mesh = none;
+    if kind == none {                                         // !!
+        chunk.voxels.remove(local_position);
+    } else {
+        chunk.voxels.insert(local_position, kind)    // !!
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then our &lt;code&gt;get_or_create_chunk&lt;/code&gt; function of course&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn get_or_create_chunk(world: &amp;amp;World, chunk_position: IVec3): &amp;amp;Chunk {
+    if !world.chunks.contains(chunk_position) {
+        
+        var voxels = HashMap::new();                            // !!
+        if chunk_position.y == 0 {
+            for z in 0..32 {
+                for x in 0..32 {
+                    voxels.insert(IVec3::new(x, 0, z), VoxelKind::Dirt); // !!
+                }
+            }
+        }
+
+        world.chunks.insert(chunk_position, Chunk { mesh: none, voxels } )
+    }
+
+    return world.chunk.get(chunk_position)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and our &lt;code&gt;create_mesh&lt;/code&gt; function as well, of course this will need to come with a change to your &lt;code&gt;draw_cube&lt;/code&gt; function but since this isn&apos;t a rendering tutorial I&apos;ll just pass in the VoxelKind and leave the colouring up to you.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn create_mesh(chunk: &amp;amp;Chunk) {
+    var vertices = [];
+
+    for (voxel_pos, voxel_kind) in chunk.voxels {    // !!
+        draw_cube(vertices, voxel_pos, voxel_kind);  // !!
+    }
+
+    chunk.mesh = Mesh::from_vertices(vertices);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;our input needs to change as well&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;if input.is_key_pressed(Key::Space) {
+    set_voxel(world, camera.position, VoxelKind::Stone);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then everything should be working!&lt;br /&gt;
+&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/multiple-block-types.png&quot; alt=&quot;Multiple Block Types&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We can also modify our world generation so that it generates stone blocks below Y=0, dirt blocks at Y=1 and air on top of it.&lt;/p&gt;
+&lt;p&gt;I&apos;ll change up the loop a bit to make it easier for you to modify it later and add your own stuff!&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn get_or_create_chunk(world: &amp;amp;World, chunk_position: IVec3): &amp;amp;Chunk {
+    if !world.chunks.contains(chunk_position) {
+        
+        var voxels = HashMap::new();
+
+        for z in 0..32 {
+            for y in 0..32 {
+                for x in 0..32 {
+                    var offset = IVec3::new(x, y, z);
+                    var world_voxel_position = chunk_position * 32 + offset;
+
+                    if world_voxel_position.y == 0 {
+                        voxels.insert(offset, VoxelKind::Dirt);
+                    } else if world_voxel_position.y &amp;lt; 0 {
+                        voxels.insert(offset, VoxelKind::Stone);
+                    }
+                }
+            }
+        }
+
+        world.chunks.insert(chunk_position, Chunk { mesh: none, voxels } )
+    }
+
+    return world.chunk.get(chunk_position)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And with that, our world generation is complete! It&apos;s not very pretty but I&apos;ll leave the artistic part to you.&lt;/p&gt;
+&lt;p&gt;Now, if you played around with it a bit, you might&apos;ve noticed that it&apos;s painfully slow.&lt;br /&gt;
+I was hoping to let you run wild for a bit and save the performance talk for later, but looks like we&apos;re dealing with it now.&lt;/p&gt;
+&lt;p&gt;Here&apos;s the thing, you might assume that the problem is the HashMap we&apos;re using for each voxel and while that is a part of the problem the bigger problem is that we&apos;re generating way too many unnecessary faces.&lt;/p&gt;
+&lt;p&gt;If you look around in your world and maybe try going into the ground you might notice that there&apos;s faces being drawn in-between blocks where it wouldn&apos;t even be visible!&lt;/p&gt;
+&lt;p&gt;You might&apos;ve also seen weird artifacting when looking at the ground, those hidden faces are also the reason for that.&lt;/p&gt;
+&lt;p&gt;What do we do, you may ask. Well first I&apos;ll need you to make your &lt;code&gt;draw_cube&lt;/code&gt; function into a &lt;code&gt;draw_quad&lt;/code&gt; function because we&apos;ll need to draw one face at a time not all 6. After that, the change is quite simple&lt;/p&gt;
+&lt;p&gt;All we need to do is update our &lt;code&gt;create_mesh&lt;/code&gt; function so that for every face we check that there&apos;s no voxel in that direction.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn create_mesh(chunk: &amp;amp;Chunk) {
+    var neighbours = [
+        (IVec3::new( 1,  0,  0), Direction::Right),
+        (IVec3::new(-1,  0,  0), Direction::Left),
+        (IVec3::new( 0,  1,  0), Direction::Up),
+        (IVec3::new( 0, -1,  0), Direction::Down),
+        (IVec3::new( 0,  0,  1), Direction::Forward),
+        (IVec3::new( 0,  0, -1), Direction::Back),
+    ]
+    var vertices = [];
+
+    for (voxel_pos, voxel_kind) in chunk.voxels {
+        for (offset, dir) in neighbours {
+            if !chunk.voxels.contains(voxel_pos + offset) {
+                draw_quad(vertices, voxel_pos, voxel_kind, dir);
+            }
+        }
+    }
+
+    chunk.mesh = Mesh::from_vertices(vertices);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And that&apos;s it! By only drawing the faces that are actually visible, we&apos;ve just reduced our vertex count by up to 90%!&lt;/p&gt;
+&lt;p&gt;Now, I&apos;ll let you play around with this for a bit. Move around, mess with the world generation (maybe try perlin noise!), have fun with it and when you&apos;re back we&apos;ll add some physics.&lt;/p&gt;
+&lt;h2&gt;Physics&lt;/h2&gt;
+&lt;p&gt;We&apos;re in the final stretch now. Let&apos;s start by adding a little bit of interactivity by adding raycasting&lt;/p&gt;
+&lt;h3&gt;Raycasting&lt;/h3&gt;
+&lt;p&gt;Our goal is to make it so we can place &amp;amp; break blocks that we&apos;re looking at.&lt;br /&gt;
+To do that, we need to raycast from our camera aka shooting a line from the camera to the world to see which voxel collides first.&lt;/p&gt;
+&lt;p&gt;Raycasting is a topic that you can really deep-dive into, heck maybe it&apos;s a deeper topic than voxel engines itself.&lt;br /&gt;
+However, the raycasting we need for a voxel engine is really simple. Since our world is a grid we can just step through each voxel one by one in the direction we&apos;re looking at.&lt;/p&gt;
+&lt;p&gt;This is usually called a DDA (Digital Differential Analyzer) raycasting. Here&apos;s the idea:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Start from the camera&apos;s position&lt;/li&gt;
+&lt;li&gt;Figure out how far you need to go in each axis (x, y, z) before you cross into the next voxel&lt;/li&gt;
+&lt;li&gt;Every step, move in the axis that&apos;s closest&lt;/li&gt;
+&lt;li&gt;Repeat until you hit something&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We will also track the last move we&apos;ve made in each step so we can figure out which side of the voxel we&apos;re looking at.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/dda.png&quot; alt=&quot;DDA Illustration&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;If you&apos;re not following any of this, don&apos;t worry me neither. All that matters is that the code we need is:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn raycast_voxel(world: &amp;amp;World, start: Vec3, direction: Vec3, max_dist: float): (IVec3, Vec3)? {
+    // the voxel we&apos;re standing in
+    var pos = start.floor().as_ivec3();
+    // which way we&apos;re stepping (+1 or -1 for each axis)
+    var step_dir = direction.sign()
+
+    // how far to step in each axis (smaller means steeper)
+    var delta = abs(1 / direction)
+
+    // how far from the current pos to the next voxel boundary
+    // for example, if we&apos;re 0.3 into a voxel and going positive X,
+    // we have 0.7 to go before hitting the next voxel wall.
+    var fract = start - pos.as_dvec3();
+    var t_max = Vec3::new(
+        if dir.x &amp;gt; 0.0 { 1.0 - fract.x } else { fract.x } * delta.x,
+        if dir.y &amp;gt; 0.0 { 1.0 - fract.y } else { fract.y } * delta.y,
+        if dir.z &amp;gt; 0.0 { 1.0 - fract.z } else { fract.z } * delta.z,
+    )
+
+    var dist = 0.0;
+    var last_move = Vec3::ZERO;
+
+    while dist &amp;lt; max_dist {
+        if get_voxel(world, pos) != none {
+            return (pos, -last_move.normalize());
+        }
+
+        // a bunch of fancy maths
+        // step in the axis with the smallest t_max — that&apos;s the next voxel boundary
+        if t_max.x &amp;lt; t_max.y &amp;amp;&amp;amp; t_max.x &amp;lt; t_max.z {
+            pos.x += step.x;
+            dist = t_max.x;
+            t_max.x += delta.x;
+            last_move = Vec3::new(step.x, 0.0, 0.0);
+        } else if t_max.y &amp;lt; t_max.z {
+            pos.y += step.y;
+            dist = t_max.y;
+            t_max.y += delta.y;
+            last_move = Vec3::new(0.0, step.y, 0.0);
+        } else {
+            pos.z += step.z;
+            dist = t_max.z;
+            t_max.z += delta.z;
+            last_move = Vec3::new(0.0, 0.0, step.z);
+        }
+
+    }
+    none
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now you&apos;ll be missing the &lt;code&gt;get_voxel&lt;/code&gt; function, that&apos;ll look very similar to our &lt;code&gt;set_voxel&lt;/code&gt; function but simpler&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn get_voxel(world: &amp;amp;World, position: IVec3): Voxel? {
+    var chunk_position = position.div_euclid(32);
+    var local_position = position.rem_euclid(32);
+
+    var chunk = get_or_create_chunk(world, chunk_position);
+    return chunk.voxels.get(local_position);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s it! Now you can raycast from the camera and get which voxel you’re looking at, plus which face you hit. This will come in handy when you want to do something crazy like... break a block or place one next to it.&lt;/p&gt;
+&lt;p&gt;So let&apos;s do that. We can delete the code that used the space key to place a voxel and replace it with something like&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;if input.is_mouse_button_pressed(MouseButton::Left) {
+    var result = raycast_voxel(world, camera.position, camera.direction, 3)
+
+    if result != none {
+        var (target_block, _) = result
+        world.set_voxel(target_block, none)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and now we can break blocks! We can do something similar for placing blocks as well, and this is where that last_move value will be useful&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;if input.is_mouse_button_pressed(MouseButton::Right) {
+    var result = raycast_voxel(world, camera.position, camera.direction, 3)
+
+    if result != none {
+        var (target_block, last_move) = result
+        world.set_voxel(target_block + last_move, Voxel::Stone)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Just like Minecraft, and every game that tried to be like Minecraft (don&apos;t @ me)&lt;/p&gt;
+&lt;p&gt;With this, you can now interact with your world in a much less jank way. And hey, you just did raycasting. Here, take some brownie points because I hated every part of that.&lt;/p&gt;
+&lt;h3&gt;AABB Collision&lt;/h3&gt;
+&lt;p&gt;And lastly, collision. This one is also a potential rabbit hole, honestly all of physics is, but it&apos;s also quite simple since our world is made up of voxels.&lt;/p&gt;
+&lt;p&gt;We&apos;re going to be handling AABB (Axis-Aligned Bounding Box) collision with our world.
+So all we care about is whether or not this box is intersecting with the world, if it is, then don&apos;t move there.&lt;/p&gt;
+&lt;p&gt;Firstly, we&apos;ll need to give our camera a hitbox. Let&apos;s go with the dimensions (0.8, 1.8, 0.8) for absolutely no reason other than hey Minecraft uses something similar.&lt;/p&gt;
+&lt;p&gt;Then, wherever your camera movement code is you&apos;ll want to set it to a variable &lt;code&gt;new_position&lt;/code&gt; before updating the camera&apos;s true position. So that we can check that the new position isn&apos;t inside anything&lt;/p&gt;
+&lt;p&gt;After that we can look at our algorithm.&lt;/p&gt;
+&lt;p&gt;Basically, first we calculate the delta of our new position and our old position. This gives us a vector telling us how much we should move in each axis.&lt;/p&gt;
+&lt;p&gt;Then we can just apply this movement vector for each axis, check that the new position isn&apos;t inside a voxel and then commit it to the camera&apos;s position.&lt;/p&gt;
+&lt;p&gt;If it is inside a voxel then we can just cancel out the movement in that direction.&lt;/p&gt;
+&lt;p&gt;A simpler way to do collision probably would&apos;ve been to just check after the entire movement but then you wouldn&apos;t be able to walk against a wall so it&apos;s not really nice to play around with.&lt;/p&gt;
+&lt;p&gt;And then there&apos;s the actual AABB logic. Basically what we&apos;re going to do is expand our camera&apos;s AABB into our voxel grid.&lt;/p&gt;
+&lt;p&gt;After that we can just check that everything inside that box is air.&lt;/p&gt;
+&lt;p&gt;We&apos;ll assume our camera position is at the centre of its AABB&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://daymare.net/blogs/voxel-engine-in-a-weekend/assets/aabb.png&quot; alt=&quot;AABB Illustration&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Anyway, here&apos;s the algorithm:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;// ..
+// new_position should be defined above
+
+var aabb_dims = Vec3::new(0.8, 1.8, 0.2);
+var aabb_half_dims = aabb_dims / 2;
+var delta = new_position - camera.position;
+
+for axis in 0..3 {
+    var target_position = new_position;
+    target_position[axis] += delta[axis];
+
+    var min = (target_position - aabb_half_dims).floor();
+    var max = (target_position + aabb_half_dims).ceil();
+
+    var collided = false;
+    for x in min.x..max.x {
+        for y in min.y..max.y {
+            for z in min.z..max.z {
+                var position = IVec3::new(x, y, z);
+                if get_voxel(world, position) != none {
+                    collided = true;
+                    break;
+                }
+            }
+
+            if collided {
+                break;
+            }
+        }
+
+        if collided {
+            break;
+        }
+    }
+
+
+    if !collided {
+        camera.position[axis] = target_position[axis];
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Can&apos;t lie, I&apos;m probably not the best person to teach physics but I had to include it. After all, who cares about a world you can&apos;t interact with.&lt;/p&gt;
+&lt;p&gt;But now, you can interact with it. And you can move around in it.&lt;/p&gt;
+&lt;h2&gt;One last thing..&lt;/h2&gt;
+&lt;p&gt;So I left this for the end intentionally since it complicates things but I can&apos;t avoid it anymore, let&apos;s take a look at our Chunk structure&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;struct Chunk {
+    voxels: HashMap&amp;lt;IVec3, VoxelKind&amp;gt;,
+    mesh: Mesh?,
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We&apos;re using a HashMap to store our voxels, however this is a really bad idea for several reasons the most important being that it&apos;s really bad for performance.&lt;/p&gt;
+&lt;p&gt;Instead, since our chunks are 32x32x32 (meaning that the IVec3s in the HashMap are always within the range of [0, 32)) we can replace our HashMap with a 3 dimensional array.&lt;/p&gt;
+&lt;p&gt;To do that, let&apos;s add an Air type to our VoxelKind first&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;enum VoxelKind {
+    Air,
+    Dirt,
+    Stone
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then we can change our Chunk to have a 3D array&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;struct Chunk {
+    voxels: [[[VoxelKind; 32]; 32]; 32],
+    mesh: Mesh?,
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note: I&apos;m indexing as &lt;code&gt;[y][z][x]&lt;/code&gt; here, but feel free to swap it with &lt;code&gt;[x][y][z]&lt;/code&gt; if it makes more sense for your brain.&lt;/p&gt;
+&lt;p&gt;Obviously this will cause a lot of errors to pop up in your code. What you&apos;ll need to do is replace all usages of accessing our &lt;code&gt;voxels&lt;/code&gt; data with using our set/get helper functions&lt;/p&gt;
+&lt;p&gt;However, those functions do need a little bit of a rework as well&lt;/p&gt;
+&lt;p&gt;Our &lt;code&gt;set_voxel&lt;/code&gt; function will no longer take an optional &lt;code&gt;VoxelKind&lt;/code&gt; but instead just take the &lt;code&gt;VoxelKind&lt;/code&gt; itself since we use &lt;code&gt;VoxelKind::Air&lt;/code&gt; for absence of a voxel now.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn set_voxel(world: &amp;amp;World, position: IVec3, kind: VoxelKind) { // !!
+    var chunk_position = position.div_euclid(32);
+    var local_position = position.rem_euclid(32);
+
+    var chunk = get_or_create_chunk(world, chunk_position);
+
+    chunk.mesh = none;
+    
+    chunk.voxels[local_position.y][local_position.z][local_position.x] = kind
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then our &lt;code&gt;get_voxel&lt;/code&gt; function will be&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn get_voxel(world: &amp;amp;World, position: IVec3): VoxelKind { // !!
+    var chunk_position = position.div_euclid(32);
+    var local_position = position.rem_euclid(32);
+
+    var chunk = get_or_create_chunk(world, chunk_position);
+    
+    chunk.voxels[local_position.y][local_position.z][local_position.x]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After this you&apos;ll be able to make it all work yourself I&apos;m sure. All but the &lt;code&gt;get_or_create_chunk&lt;/code&gt; function and &lt;code&gt;create_mesh&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;Let&apos;s take a look at how &lt;code&gt;get_or_create_chunk&lt;/code&gt; changes&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn get_or_create_chunk(world: &amp;amp;World, chunk_position: IVec3): &amp;amp;Chunk {
+    if !world.chunks.contains(chunk_position) {
+        
+        var voxels = [[[VoxelKind::Air; 32]; 32]; 32]; // !!
+        if chunk_position.y == 0 {
+            for z in 0..32 {
+                for x in 0..32 {
+                    voxels[0][z][x] = VoxelKind::Dirt;
+                }
+            }
+        }
+
+        world.chunks.insert(chunk_position, Chunk { mesh: none, voxels } )
+    }
+
+    return world.chunk.get(chunk_position)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That was an obvious fix I know, but then there&apos;s the &lt;code&gt;create_mesh&lt;/code&gt; function, which has one important gotcha that you might miss.&lt;/p&gt;
+&lt;p&gt;In our create_mesh function we were only drawing a face if the neighbour didn&apos;t exist (now it&apos;d be if it&apos;s &lt;code&gt;VoxelKind::Air&lt;/code&gt;) but since we were using a HashMap we didn&apos;t need to care if the neighbour was outside of our chunk.&lt;/p&gt;
+&lt;p&gt;Now we do. So we&apos;ll need to add an &lt;code&gt;is_oob&lt;/code&gt; flag to the loop, and if the neighbour is out of bounds (meaning that it&apos;s either in the negatives or greater than 32) we&apos;ll treat it as if it was Air. Effectively the same as the old version.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn create_mesh(chunk: &amp;amp;Chunk) {
+    var neighbours = [
+        (IVec3::new( 1,  0,  0), Direction::Right),
+        (IVec3::new(-1,  0,  0), Direction::Left),
+        (IVec3::new( 0,  1,  0), Direction::Up),
+        (IVec3::new( 0, -1,  0), Direction::Down),
+        (IVec3::new( 0,  0,  1), Direction::Forward),
+        (IVec3::new( 0,  0, -1), Direction::Back),
+    ]
+    var vertices = [];
+
+    for (voxel_pos, voxel_kind) in chunk.voxels {
+        for (offset, dir) in neighbours {
+            var np = voxel_pos + offset;
+            var is_oob = np.any(|axis| axis &amp;lt; 0 || axis &amp;gt;= 32);
+
+
+            if is_oob || chunk.voxels[np.y][np.z][np.x] == VoxelKind::Air {
+                draw_quad(vertices, voxel_pos, voxel_kind, dir);
+            }
+        }
+    }
+
+    chunk.mesh = Mesh::from_vertices(vertices);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;The END!&lt;/h2&gt;
+&lt;p&gt;And ta da!!!&lt;/p&gt;
+&lt;p&gt;You have a voxel engine! You started with a single cube and now you got chunks, raycasting, physics, and an infinite world. Every voxel engine looks the same at first, so go make it yours.&lt;/p&gt;
+&lt;p&gt;And please please please show it off to me on &lt;a href=&quot;https://discord.gg/t7gNX8Kp72&quot;&gt;my discord server&lt;/a&gt; or contact me at &lt;a href=&quot;mailto:contact@daymare.net&quot;&gt;contact@daymare.net&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you found this post useful, consider &lt;a href=&quot;https://ko-fi.com/todaymare&quot;&gt;tossing me a coin&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;or is it?&lt;/h2&gt;
+&lt;p&gt;But we all know that this isn&apos;t the end but the beginning. Here&apos;s a few challenges if you dare take it upon yourself, I ordered them with my completely arbitrary scale of difficulty&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Gravity &amp;amp; Jumping&lt;/strong&gt;: We have physics, why not make it actually playable!&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Offset the camera&apos;s AABB&lt;/strong&gt;: Right now we assume the camera is in the centre of its AABB, it&apos;s simple but it doesn&apos;t really feel right. Your head is higher than the middle of your body, so try to change that&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Procedural Terrain&lt;/strong&gt;: I didn&apos;t touch upon this in the world generation section since it&apos;s more the artistic part of voxel engines but you should definitely take a look, give your engine some personality. The setup I gave you with &lt;code&gt;get_or_create_chunk&lt;/code&gt; should make it super trivial to add new stuff. Hint, look into using a 2D perlin noise texture as a height map.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Save &amp;amp; Loading&lt;/strong&gt;: I was planning on including this in the article itself but it&apos;s already long enough so I&apos;ll leave it as a challenge for you. Start with saving your chunk data to a binary file and load it in the &lt;code&gt;get_or_generate_chunk&lt;/code&gt; function. After that, you could look into region based loading as well if you&apos;re curious.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Unloading invisible chunks&lt;/strong&gt;: Any chunk outside of the render distance can be unloaded to the disk instead of wasting memory, try periodically checking if the chunk is within the render distance and if not unload it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Removing the faces between chunks&lt;/strong&gt;: You might&apos;ve noticed from before we added physics that even though we optimized our mesh by a lot there&apos;s still more invisible faces in-between chunks. It&apos;s not too hard to remove those as well, your &lt;code&gt;create_mesh&lt;/code&gt; function will need to know about the surrounding chunks as well. After this is also a pretty good place to stop with the mesh optimizations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Frustum Culling&lt;/strong&gt;: Right now we&apos;re drawing every chunk within the render distance even if it&apos;s behind us. Try adding frustum culling to only draw the chunks that are actually visible.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Ambient Occlusion&lt;/strong&gt;: There&apos;s this really great article on ambient occlusion for voxels, &lt;a href=&quot;https://0fps.net/2013/07/03/ambient-occlusion-for-minecraft-like-worlds/&quot;&gt;check it out&lt;/a&gt; it really changes the whole vibe of your world from plastic barbie land to an actual world&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Textures!&lt;/strong&gt;: So far I&apos;ve been using plain colours for my voxels, and I can only assume you&apos;ve been doing the same. So try adding textures, maybe even a texture atlas.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Greedy Meshing&lt;/strong&gt;: So, you didn&apos;t heed my warning. That&apos;s fine, &lt;a href=&quot;https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/&quot;&gt;here is your path soldier&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Lighting, of course&lt;/strong&gt;: After ambient occlusion it&apos;s only natural that you try to do lighting. For minecraft style lighting &lt;a href=&quot;https://0fps.net/2018/02/21/voxel-lighting/&quot;&gt;here&apos;s an article you could check out&lt;/a&gt;. Hint, one difference you might notice is that while Minecraft&apos;s chunks are 16x256x16 our chunks are 32x32x32. But in order to implement that lighting system you&apos;ll need to determine a height limit.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Speed, speed, speed&lt;/strong&gt;: &lt;a href=&quot;https://www.youtube.com/watch?v=40JzyaOYJeY&quot;&gt;SPEEEEEED&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Octrees&lt;/strong&gt;: For when HashMaps of chunks are too slow.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Multithreading&lt;/strong&gt;: Here be dragons. Async chunk generation, chunk meshing, cache invalidation, all that and more awaits you. But if you do dare take upon this quest, you better know that the result feels incredible.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Regions&lt;/strong&gt;: Okay this one isn&apos;t actually the hardest but for you to get any use out of it your voxel engine already needs to be stupidly fast. HashMaps are really slow with a lot of entries, so try to group your chunks into 32x32x32 regions. Chunk-ception or something.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Chunk Unloading v2&lt;/strong&gt;: More dragons. You might&apos;ve noticed that your voxel engine is using a lot of memory at high render distances, that&apos;s because each chunk is at least &lt;code&gt;32768&lt;/code&gt; bytes (assuming each voxel is 1 byte). But let me tell you a secret, you don&apos;t need to have the voxel data of the far away chunks loaded. You can just generate the mesh and unload the data for it. Have fun with this information as you will, it&apos;s the difference between 96 render distance using 230+GBs of memory vs 3GBs (&lt;a href=&quot;../godot-ruined-me/&quot;&gt;true story&lt;/a&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;???&lt;/strong&gt;: Who says voxels need to be on the CPU?&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content></entry><entry><title>So I became God: Artificial Life</title><id>https://daymare.net/blogs/artificial-life</id><updated>2025-11-02T07:50:02.679417958+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/artificial-life" rel="alternate"/><published>2025-11-02T07:50:02.679417958+00:00</published><summary>&lt;p&gt;Let me take you through a journey of curiosity, growth, and cannibalism. One inspired by a video game and some questionable media..&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let me take you through a journey of curiosity, growth, and cannibalism. One inspired by a video game and some questionable media..&lt;/p&gt;
 &lt;p&gt;About a year ago, I watched the &lt;a href=&quot;https://en.wikipedia.org/wiki/Plaything_(Black_Mirror)&quot;&gt;Black Mirror episode &amp;quot;Plaything&amp;quot;&lt;/a&gt; (awesome ep. btw). I didn&apos;t think much of it then but it was my introduction to the idea of artificial life.&lt;/p&gt;
 &lt;p&gt;Obviously, even before then I&apos;d seen the fancy YouTube videos, you know the &amp;quot;I made an ecosystem in Unity!&amp;quot; ones. But again, still nothing.&lt;/p&gt;
 &lt;p&gt;Until I saw a roguelike called &lt;a href=&quot;https://store.steampowered.com/app/3011360/Primordialis/&quot;&gt;Primordialis&lt;/a&gt;.
@@ -409,8 +1131,7 @@ I started near the end of 2023. At first, it was supposed to be for another game
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;A language that feels like Rust, but without the fights I used to lose with the borrow checker. It&apos;s a statically-typed language that is almost too trivial to embed into any project. The syntax is very akin to Rust with Iterators, Closures, and much more!&lt;/p&gt;
 &lt;p&gt;Was this post just a big ad for &lt;em&gt;margarine&lt;/em&gt;? It certainly wasn&apos;t the intention but after four years it feels good to finally share something that works, and it couldn&apos;t hurt to &lt;a href=&quot;https://github.com/todaymare/margarine&quot;&gt;check it out&lt;/a&gt; can it?&lt;/p&gt;
-&lt;p&gt;and hey, if it resonated with you &lt;a href=&quot;https://ko-fi.com/todaymare&quot;&gt;consider dropping me a coffee&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;PS: I’ve seen a few people mention they’d have liked a more technical deep dive, totally fair. This post was always meant as a story of the journey, not the implementation, but don’t worry: a detailed, technical write-up is already in the works. Thanks to everyone who read and shared feedback, seriously appreciate it.&lt;/p&gt;</content></entry><entry><title>hello world</title><id>https://daymare.net/blogs/first-blog</id><updated>2025-10-02T19:36:48.068611622+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/first-blog" rel="alternate"/><published>2025-10-02T19:36:48.068611622+00:00</published><summary>&lt;p&gt;uh, hi, idk what to say here but helloooo. i made a static site generator for this. it takes the first line of the markdown as the title and the 2nd line as the summary actually i lied you can use multiple lines if you end the line with a \&lt;/p&gt;</summary><content type="html">&lt;p&gt;uh, hi, idk what to say here but helloooo. i made a static site generator for this. &lt;br /&gt;
+&lt;p&gt;and hey, if it resonated with you &lt;a href=&quot;https://ko-fi.com/todaymare&quot;&gt;consider dropping me a coffee&lt;/a&gt;&lt;/p&gt;</content></entry><entry><title>hello world</title><id>https://daymare.net/blogs/first-blog</id><updated>2025-10-02T19:36:48.068611622+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/first-blog" rel="alternate"/><published>2025-10-02T19:36:48.068611622+00:00</published><summary>&lt;p&gt;uh, hi, idk what to say here but helloooo. i made a static site generator for this. it takes the first line of the markdown as the title and the 2nd line as the summary actually i lied you can use multiple lines if you end the line with a \&lt;/p&gt;</summary><content type="html">&lt;p&gt;uh, hi, idk what to say here but helloooo. i made a static site generator for this. &lt;br /&gt;
 it takes the first line of the markdown as the title and the 2nd line as the summary &lt;br /&gt;
 actually i lied you can use multiple lines if you end the line with a \&lt;/p&gt;
 &lt;p&gt;um, i&apos;m gonna ask chatgpt to write something here&lt;br /&gt;

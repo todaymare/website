@@ -18,6 +18,7 @@ html, body {
     padding: 0rem;
     background: var(--color-bg);
     width: 100%;
+    scroll-behavior: smooth;
 }
 
 /* Default style */
