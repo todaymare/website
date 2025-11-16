@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Speedrunning a CPU: RISC-V in a Week – daymare.net</title>
+    <link rel="stylesheet" href="../../blog_styles.css">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "Speedrunning a CPU: RISC-V in a Week",
+            "image": "https://daymare.net/blogs/speedrunning-a-cpu/assets/banner_1200x1010.webp",
+            "author": {
+                "@type": "Person",
+                "name": "Todaymare"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "daymare.net",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https://daymare.net/logo.png"
+                }
+            },
+            "datePublished": "2025-11-16T00:07:52.323736212Z",
+            "url": "https://daymare.net/blogs/speedrunning-a-cpu/",
+            "description": "I made a RISC-V Emulator that runs at 550 million instructions per second from scratch in one week. Here's how it went."
+        }
+    </script>
+
+    <script src="../../blog.js" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".thumbnail.full").forEach(img => {
+                if (img.complete) img.classList.add("loaded");
+                else img.addEventListener("load", () => img.classList.add("loaded"));
+            });
+        });
+    </script>
+
+
+    <meta name="description" content="I made a RISC-V Emulator that runs at 550 million instructions per second from scratch in one week. Here's how it went.">
+    <meta name="author" content="Todaymare">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:title" content="Speedrunning a CPU: RISC-V in a Week">
+    <meta property="og:description" content="I made a RISC-V Emulator that runs at 550 million instructions per second from scratch in one week. Here's how it went.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://daymare.net/blogs/speedrunning-a-cpu/">
+    <meta property="og:image" content="https://daymare.net/blogs/speedrunning-a-cpu/assets/banner_1200x1010.webp">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Speedrunning a CPU: RISC-V in a Week">
+    <meta name="twitter:description" content="I made a RISC-V Emulator that runs at 550 million instructions per second from scratch in one week. Here's how it went.">
+    <meta name="twitter:image" content="https://daymare.net/blogs/speedrunning-a-cpu/assets/banner_1200x1010.webp">
+
+    <link rel="canonical" href="https://daymare.net/blogs/speedrunning-a-cpu/">
+
+</head>
+<body>
+    <div class="text-body">
+
+
+    <div class="meta" itemscope itemtype="https://schema.org/BlogPosting">
+        <span><time itemprop="datePublished" datetime="2025-11-16T00:07:52.323736212Z">Nov 16</time> | <span itemprop="author">by me</span></span>
+        <span class="read-time">13 min. read</span>
+    </div>
+
+    <div class="thumbnail-wrapper">
+        <img
+            class="thumbnail preview"
+            src="data:image/webp;base64, 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"
+            alt="Low-res preview"
+            width="1900"
+            height="1600"
+        />
+        <img
+            class="thumbnail full"
+            srcset="
+            ./assets/banner_400x336.webp 400w,
+            ./assets/banner_800x673.webp 800w,
+            ./assets/banner_1200x1010.webp 1200w,
+            ./assets/banner_1600x1347.webp 1600w
+            "
+            sizes="(max-width: 80rem) 90vw, 40rem"
+            loading="lazy"
+            alt="Thumbnail for Speedrunning a CPU: RISC-V in a Week blog post"
+            width="1900"
+            height="1600"
+        />
+    </div>
+
+    <header>
+        <h1>Speedrunning a CPU: RISC-V in a Week</h1>
+    </header>
+
+    <main>
+        <article>
+            <p>I made a RISC-V Emulator that runs at 550 million instructions per second from scratch in one week. Here's how it went.</p>
+<p>So, here's the thing. After the <a target="_blank" rel="noopener noreferrer" href="../voxel-engine-in-a-weekend/">Voxel Engine in a Weekend</a> project, I was looking for a new challenge. That's when I thought, huh, why not make an OS? And a compiler running in that OS, and also a browser, a neovim clone inside that OS, and while we're at it GTA 6 as well.</p>
+<p>But of course I couldn't just learn to make an OS, nah that'd be too easy. And I quote:</p>
+<blockquote>
+<p>Why stop at an OS, why not make your own CPU that runs your own OS with your own language that compiles to it.<br />
+<em>08/11/2025</em></p>
+</blockquote>
+<p>I had to start from the CPU itself, otherwise how could I be proud of it. And I also had to do it fast, considering for this entire project (the OS, browser, compiler, neovim clone, GTA 6) I allocated myself a generous singular year. It was set, I was going to speedrun making a CPU, and I was going to use RISC-V.</p>
+<h2 id="step-1-say-youll-make-an-assembler-too">Step 1: Say you'll make an assembler too!</h2>
+<p>Okay I hear you, I just said &quot;gotta go fast&quot; and now am considering making an assembler for seemingly no reason. In my defence, I had not a single clue where to start, but I have made <a target="_blank" rel="noopener noreferrer" href="../four-years-five-failures-one-compiler/">plenty of programming languages</a> so I thought: okay, if we're going to do this I might as well start with an assembler, since it'll be a nice easy step to smooth out the curve and get me used to the binary format of RISC-V.</p>
+<p>In theory, an assembler is as simple as it gets. You have really simple syntax, maybe a few shapes of instructions, basically no semantic analysis, and a trivial 1:1 code generation phase. In practice, however, GOOD assemblers are filled with macros, pseudoinstructions, constant folding, and probably so much more that I can't think of off the top of my head.</p>
+<p>Are any of these really hard? Not really. But all of them require a lot more knowledge in the target instruction set than I had at the start of this week. Pseudoinstructions aren't officially documented... what the hell is a macro... constant folding who? You can probably guess that my hope of writing an assembler vanished VERY quickly, and all of that before I even got to the codegen part of the assembler. You know, the part that's actually useful to me making an emulator?</p>
+<p>I could've made a toy assembler, but would I have used it? Absolutely not. This thing is hard enough already I don't need one more thing to debug. So I made the very difficult and heart breaking call to not make an assembler.</p>
+<h2 id="step-2-oh-its-only-200-pages-">Step 2: Oh it's only 200 pages-</h2>
+<p>Now, time for the emulator. I wanted to, I needed to keep this emulator as simple as possible so I could complete it in this week. So I decided, no virtual memory, no fancy extensions, no jit, nothing fancy. And then it was Sunday morning.</p>
+<p>I opened up my computer with the hopes to get the emulator started. See, the first thing I do with any interpreter I make is to run the recursive-Fibonacci algorithm. It's a nice little stress test that is very easy to run and gets the dopamine flowing you know? So I went to the RISC-V site to check out the instruction set.</p>
+<p>There were 2 specs. <a target="_blank" rel="noopener noreferrer" href="https://docs.riscv.org/reference/isa/_attachments/riscv-unprivileged.pdf">Volume 1</a> for unprivileged architecture, and <a target="_blank" rel="noopener noreferrer" href="https://docs.riscv.org/reference/isa/_attachments/riscv-privileged.pdf">Volume 2</a> for privileged. Since my goal was to make an OS and not to compile to a RISC-V user platform I thought: okay, I just need Volume 2. I opened it up and it had about 221 pages. Okay that's a lot of pages. Hell, that's 6 pages of just table of contents.</p>
+<p>But it's managable, I could skim through it in a day or so and then reference it back or something. So I got looking. Huh. I can't see where the instructions are.</p>
+<p>Here's the thing, dear reader. You might've noticed that the books are titled Volume 1 &amp; 2, and while I didn't think they actually meant it in that way they absolutely did. The instructions were on Volume 1 as well.</p>
+<p>Would you like to guess how long Volume 1 is?<br />
+About as long as Volume 2?
+Yeah that's about what I'd expect too,</p>
+<p>NOT 727 PAGES.</p>
+<p>I ain't reading all that. If you're curious that's 19 pages of table of contents.</p>
+<p>Granted the spec is very well structured and looking back all I would've had to check out was maybe about 20-30 pages filled with diagrams. But '727 pages' was enough to make me close the tab and look for other more concise sheets. And that's when I found it. My saviour, <a target="_blank" rel="noopener noreferrer" href="https://book.rvemu.app/index.html">Writing a RISC-V Emulator in Rust</a>. When I saw this I went</p>
+<blockquote>
+<p>Omg, I don't need to learn anything let's go!</p>
+</blockquote>
+<p>..that is, until I clicked on the link. Here, I'll show you the table of contents of it at the time of writing:</p>
+<pre><code>Writing a RISC-V Emulator in Rust
+   1. Hardware Components
+      1.1. CPU with Two Instructions
+      1.2. Memory and System Bus
+      1.3. Control and Status Registers
+   2. Instruction Set
+      2.1. RV64I Base Integer Instruction Set
+</code></pre>
+<p>And, that's it. I'm not trying to bash on the creator of it I'm sure it's either an unfinished or even an abandoned passion project, but when I saw this the timing was so unfortunate it became funny. For those curious, that's about 0.1 pages of table of contents.</p>
+<p>BUT THEN IT APPEARED!</p>
+<p>My actual saviour,<br />
+the <a target="_blank" rel="noopener noreferrer" href="https://msyksphinz-self.github.io/riscv-isadoc/">RISC-V Instruction Set Specifications</a> by some random github person.</p>
+<p>It was pretty, it was useful, it sometimes had typoes and mistakes, but most importantly, it had whitespace so it didn't look scary.</p>
+<h2 id="step-3-make-the-thing-already">Step 3: ..make the thing already?</h2>
+<p>It was still Sunday. I got some very basic RISC-V code working.</p>
+<pre><code>    .section .text
+    .globl _start
+_start:
+    li   a0, 42
+    li   a1, 99
+    add  a2, a0, a1
+1:  j   1b                # infinite loop
+</code></pre>
+<p>can you guess what it does? Probably not, it's too advanced.</p>
+<p>But now that I had this very simple snippet working the momentum curve was slowly tilting in my favour.</p>
+<p>By the end of Sunday I had 13 instructions ready. And fast forward a few days I had the entirety of RISCV64I implemented. Which of course surfaced a new kind of problem. The hardest, least motivating part of writing an emulator like this is that you really have no idea if your implementation is correct. Sure yeah your programs might be working but you don't know the edge-cases, and when a program doesn't work like you expected good luck trying to debug it.</p>
+<p>When I brought this point up to one of my friends he linked me the <a target="_blank" rel="noopener noreferrer" href="https://github.com/riscv-software-src/riscv-tests">RISC-V Test Suite</a>, which I promptly ignored in favour of compiling some Rust code and running it on my emulator.</p>
+<p>..damn, all that set up for nothing.</p>
+<p>Okay, to compile Rust to RISC-V, Rust provides a bunch of pre-made targets. But you see, RISC-V at it's core is a very simple instruction set with 47 instructions and it provides optional extensions like multiplcation, floating-point numbers, atomics, etc. And not implementing these optional extensions is really not an option with Rust's premade targets.</p>
+<p>So I had to make my own custom Rust target. Which sounds interesting but was mostly done by my friend and when I asked him how he did it his response was &quot;I asked ChatGPT and copy pasted the errors until it worked&quot;. Which, fair enough.</p>
+<p>Of course, the first thing I compiled with Rust was</p>
+<pre><code class="language-rs">fn fib(n: usize) -&gt; usize {
+    if n &lt;= 1 { n }
+    else { fib(n-1) + fib(n-2) }
+}
+</code></pre>
+<p>Which worked first try of course, on the 4th try.</p>
+<p>And now that Fibonacci was working I had to go for the second milestone of interpreter development: Flappy Bird.</p>
+<h2 id="step-4-so-how-do-we-see">Step 4: So how do we see?</h2>
+<p>Well, first things first, we need a window.</p>
+<p>Since this is my emulator, I get to make the rules. And I decided that a specific memory range would be dedicated to the framebuffer. One of the few places where I actually went with the simplest option yes.
+So at address <code>0x1000_0000</code>, I placed a 1920x1080 RGBA framebuffer, so I could see the 16x16 pixel art of Flappy Bird in full HD.</p>
+<p>Needless to say I got humbled FAST.</p>
+<p>See at this point, my emulator was running at a solid 100 million instructions per second (MIPS!, which sounds impressive until you do the math.</p>
+<p>A 1920x1080 framebuffer has over 2 million pixels.
+Even if we only spent 5 instructions per pixel (which is practically impossible), that's already 10 million instructions per frame, or 10FPS.</p>
+<p>That's with math that's about as accurate as rounding PI to 10.</p>
+<p>I know that I'm &quot;speedrunning a CPU&quot; but like.. it has to be at least usable you know?</p>
+<p>So in a moment of weakness, in the middle of a uni lecture, I lowered the resolution to 640x360. Which brought the FPS from a theoretical 10FPS to about 40 real FPS.<br />
+For drawing a white background.</p>
+<p>But 40 FPS ain't real time. That's AI-interpolated horrible animation framerate, not a usable GUI app framerate. So I got to optimizing, and the one thing that really improved the performance was the Instruction Cache.</p>
+<h3 id="the-instruction-cache">The Instruction Cache</h3>
+<p>Before I explain that, let's look at the problem it solves first:</p>
+<p>When decoding a RISC-V instruction, you don't really have a single number that tells you what the instruction does. Instead, you have these instruction shapes (like register-register, register-immediate, jump instructions) and only after you figure out the instruction shape you can decode the instruction itself.</p>
+<p>For hardware, this is extremely fast. Since the main decoder only needs to know the shape of the instruction and then can send it to something that knows how to decode it.<br />
+For software, this is absolutely horrible.</p>
+<p>For software, we first need to match on the shape of the instruction and then match on the actual instruction in order to execute it. But if you look like 5 lines above, you'll know that there's a solution to this. We can just cache the decoded instruction instead of decoding it on the fly every time. Let me introduce you to: The Instruction Cache</p>
+<p>Basically, when were trying to decode an instruction we first hit up the instruction cache to see if it has already been decoded. If yes, then just execute that. If no, then decode it and put it in the instruction cache, then run it.</p>
+<p>But how are we going to decide what to decode?</p>
+<ul>
+<li>
+<p>We could have a 1:1 mapping of our entire memory to instructions<br />
+our entire 64 bits of memory..?</p>
+</li>
+<li>
+<p>Can't we just decode the code given to the emulator?<br />
+Well no. If we want to run actual OS code, it'll need to be able to load new programs at runtime</p>
+</li>
+<li>
+<p>What about a HashMap?<br />
+A HashMap lookup every single instruction would probably reduce our 40FPS to 0.4</p>
+</li>
+<li>
+<p>So what did I do?<br />
+Pages!</p>
+</li>
+</ul>
+<p>When loading a PC we can look at what page it's in and load that page to the instruction cache. And that works! But (not so) surprisingly, when implemented naively it's not much faster than just decoding on the fly.</p>
+<p>The reason for this is that in the naive solution, we're checking the PC every time it moves to the next instruction, which is horribly slow and unnecessary considering most of the time we're just moving to the next instruction.</p>
+<p>But if we're not checking the PC every time, how do we know that it has changed?</p>
+<p>Here's the idea, let's say our pages are 1024 instructions (4KBs).<br />
+What if we inserted a fake instruction at the end of the page that tells us that we're at the end of the page. Kind of like a nul-terminated string!</p>
+<p>Then we can go fetch the new page our PC is in.</p>
+<p>And then for instructions that modify the PC directly (jumps, branches, etc.) we can just always fetch the page for the PC.</p>
+<p>Of course I did add early-outs to that page fetch for the common case where the jump is in the same page but that's the general idea of the Instruction Cache.</p>
+<p>After tinkering around with the Instruction Cache a bit more, instruction decoding became essentially free. Which is absolutely amazing, but I was still at only 65FPS.</p>
+<h3 id="the-m-extension">The M extension</h3>
+<p>Next thing I implemented was support for more advanced operations. Such as multiplication (scary), and division!</p>
+<p>This brought the performance up from 65FPS to about 80. Mostly because before this we were using a software implementation of division and multiplication.</p>
+<p>Which means hundreds of instructions that got replaced with a single instruction.</p>
+<p>And unfortunately I was out of ideas for how to make this any faster, so I had to accept that my emulator was only at 160MIP/s, which is still amazing for a pure interpreter!<br />
+If I had 160MIP/s back in the year 200 I would've been basically god.</p>
+<p>This is about the time where I went back to the RISC-V test suite I mentioned a bit ago.</p>
+<h2 id="step-5-timeout">Step 5) Timeout</h2>
+<p>Originally, this section was going to be about how, on the very last day (the saturday right before this post went up) <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/@leddoo">leddoo</a>, completely unprompted, found a way to bump the interpreter from 160 MIPS to 540 MIPS. Purely interpreted.</p>
+<p>And I was gonna talk about it.<br />
+I really was.</p>
+<p>But then I wrote the title &quot;Timeout&quot; and realized:
+crap, I forgot to mention timers.</p>
+<p>And listen-<br />
+I would very much rather not talk about whatever that was.<br />
+It apparently involved something called CSRs??</p>
+<p>So that's it. Just like that my one-week CPU speedrun was over.<br />
+That's your ending. We're done here.</p>
+<p>...</p>
+<p>oh<br />
+What's that?<br />
+You're curious how we went from 160MIPS to 550?</p>
+<p>Well that's awkward.<br />
+Honestly, I'd love to explain it. But it's 11:30PM, I haven't even made a thumbnail yet, and this post goes up at 9AM.
+Maybe I'll write about it in another post if enough people ask. For now, <a target="_blank" rel="noopener noreferrer" href="https://github.com/todaymare/riscv-emulator">here's the repo</a></p>
+<p>Here, I'll even make it easy to bother me:</p>
+<ul>
+<li><a target="_blank" rel="noopener noreferrer" href="https://discord.gg/t7gNX8Kp72">My discord server</a>, if you want to bother me about the deets this is probably the best place.</li>
+<li><a href="mailto:contact@daymare.net">My E-Mail</a>, probably not the best place but I do enjoy getting mails a lot. Makes me feel important</li>
+</ul>
+<p>And hey, if you enjoyed this post consider <a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/todaymare">buying me a cup of coffee</a>.<br />
+I kinda forgot this was a &quot;weekly blog&quot; and got way too deep into emulator dev.<br />
+It happens.</p>
+<p>Alright. Goodnight.</p>
+
+        </article>
+    </main>
+
+    <nav class="post-nav">
+        <div></div>
+        <a class="home" href="../../">Home</a>
+        <div></div>
+    </nav>
+    </div>
+
+    <a target="_blank" rel="noopener noreferrer" class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">
+        <img src="../../kofi_symbol.svg" alt="Buy me a coffee on Ko-fi" width="64" height="64">
+    </a>
+
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -1,5 +1,154 @@
 <?xml version="1.0"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>daymare.net</title><id>https://daymare.net/</id><updated>2025-11-08T08:59:20.525546+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><link href="https://daymare.net/" rel="self"/><entry><title>Voxel Engine in a Weekend</title><id>https://daymare.net/blogs/voxel-engine-in-a-weekend</id><updated>2025-11-08T08:59:03.535128220+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/voxel-engine-in-a-weekend" rel="alternate"/><published>2025-11-08T08:59:03.535128220+00:00</published><summary>&lt;p&gt;It feels like everyone who learns how to make a voxel-engine learns it through sheer osmosis of information, so let&apos;s change that. Come along, let&apos;s make you a voxel engine!&lt;/p&gt;</summary><content type="html">&lt;p&gt;It feels like everyone who learns how to make a voxel-engine learns it through sheer osmosis of information, so let&apos;s change that. Come along, let&apos;s make you a voxel engine!&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>daymare.net</title><id>https://daymare.net/</id><updated>2025-11-16T00:25:13.341125+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><link href="https://daymare.net/" rel="self"/><entry><title>Speedrunning a CPU: RISC-V in a Week</title><id>https://daymare.net/blogs/speedrunning-a-cpu</id><updated>2025-11-16T00:07:52.323736212+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/speedrunning-a-cpu" rel="alternate"/><published>2025-11-16T00:07:52.323736212+00:00</published><summary>&lt;p&gt;I made a RISC-V Emulator that runs at 550 million instructions per second from scratch in one week. Here&apos;s how it went.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I made a RISC-V Emulator that runs at 550 million instructions per second from scratch in one week. Here&apos;s how it went.&lt;/p&gt;
+&lt;p&gt;So, here&apos;s the thing. After the &lt;a href=&quot;../voxel-engine-in-a-weekend/&quot;&gt;Voxel Engine in a Weekend&lt;/a&gt; project, I was looking for a new challenge. That&apos;s when I thought, huh, why not make an OS? And a compiler running in that OS, and also a browser, a neovim clone inside that OS, and while we&apos;re at it GTA 6 as well.&lt;/p&gt;
+&lt;p&gt;But of course I couldn&apos;t just learn to make an OS, nah that&apos;d be too easy. And I quote:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Why stop at an OS, why not make your own CPU that runs your own OS with your own language that compiles to it.&lt;br /&gt;
+&lt;em&gt;08/11/2025&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I had to start from the CPU itself, otherwise how could I be proud of it. And I also had to do it fast, considering for this entire project (the OS, browser, compiler, neovim clone, GTA 6) I allocated myself a generous singular year. It was set, I was going to speedrun making a CPU, and I was going to use RISC-V.&lt;/p&gt;
+&lt;h2&gt;Step 1: Say you&apos;ll make an assembler too!&lt;/h2&gt;
+&lt;p&gt;Okay I hear you, I just said &amp;quot;gotta go fast&amp;quot; and now am considering making an assembler for seemingly no reason. In my defence, I had not a single clue where to start, but I have made &lt;a href=&quot;../four-years-five-failures-one-compiler/&quot;&gt;plenty of programming languages&lt;/a&gt; so I thought: okay, if we&apos;re going to do this I might as well start with an assembler, since it&apos;ll be a nice easy step to smooth out the curve and get me used to the binary format of RISC-V.&lt;/p&gt;
+&lt;p&gt;In theory, an assembler is as simple as it gets. You have really simple syntax, maybe a few shapes of instructions, basically no semantic analysis, and a trivial 1:1 code generation phase. In practice, however, GOOD assemblers are filled with macros, pseudoinstructions, constant folding, and probably so much more that I can&apos;t think of off the top of my head.&lt;/p&gt;
+&lt;p&gt;Are any of these really hard? Not really. But all of them require a lot more knowledge in the target instruction set than I had at the start of this week. Pseudoinstructions aren&apos;t officially documented... what the hell is a macro... constant folding who? You can probably guess that my hope of writing an assembler vanished VERY quickly, and all of that before I even got to the codegen part of the assembler. You know, the part that&apos;s actually useful to me making an emulator?&lt;/p&gt;
+&lt;p&gt;I could&apos;ve made a toy assembler, but would I have used it? Absolutely not. This thing is hard enough already I don&apos;t need one more thing to debug. So I made the very difficult and heart breaking call to not make an assembler.&lt;/p&gt;
+&lt;h2&gt;Step 2: Oh it&apos;s only 200 pages-&lt;/h2&gt;
+&lt;p&gt;Now, time for the emulator. I wanted to, I needed to keep this emulator as simple as possible so I could complete it in this week. So I decided, no virtual memory, no fancy extensions, no jit, nothing fancy. And then it was Sunday morning.&lt;/p&gt;
+&lt;p&gt;I opened up my computer with the hopes to get the emulator started. See, the first thing I do with any interpreter I make is to run the recursive-Fibonacci algorithm. It&apos;s a nice little stress test that is very easy to run and gets the dopamine flowing you know? So I went to the RISC-V site to check out the instruction set.&lt;/p&gt;
+&lt;p&gt;There were 2 specs. &lt;a href=&quot;https://docs.riscv.org/reference/isa/_attachments/riscv-unprivileged.pdf&quot;&gt;Volume 1&lt;/a&gt; for unprivileged architecture, and &lt;a href=&quot;https://docs.riscv.org/reference/isa/_attachments/riscv-privileged.pdf&quot;&gt;Volume 2&lt;/a&gt; for privileged. Since my goal was to make an OS and not to compile to a RISC-V user platform I thought: okay, I just need Volume 2. I opened it up and it had about 221 pages. Okay that&apos;s a lot of pages. Hell, that&apos;s 6 pages of just table of contents.&lt;/p&gt;
+&lt;p&gt;But it&apos;s managable, I could skim through it in a day or so and then reference it back or something. So I got looking. Huh. I can&apos;t see where the instructions are.&lt;/p&gt;
+&lt;p&gt;Here&apos;s the thing, dear reader. You might&apos;ve noticed that the books are titled Volume 1 &amp;amp; 2, and while I didn&apos;t think they actually meant it in that way they absolutely did. The instructions were on Volume 1 as well.&lt;/p&gt;
+&lt;p&gt;Would you like to guess how long Volume 1 is?&lt;br /&gt;
+About as long as Volume 2?
+Yeah that&apos;s about what I&apos;d expect too,&lt;/p&gt;
+&lt;p&gt;NOT 727 PAGES.&lt;/p&gt;
+&lt;p&gt;I ain&apos;t reading all that. If you&apos;re curious that&apos;s 19 pages of table of contents.&lt;/p&gt;
+&lt;p&gt;Granted the spec is very well structured and looking back all I would&apos;ve had to check out was maybe about 20-30 pages filled with diagrams. But &apos;727 pages&apos; was enough to make me close the tab and look for other more concise sheets. And that&apos;s when I found it. My saviour, &lt;a href=&quot;https://book.rvemu.app/index.html&quot;&gt;Writing a RISC-V Emulator in Rust&lt;/a&gt;. When I saw this I went&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Omg, I don&apos;t need to learn anything let&apos;s go!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;..that is, until I clicked on the link. Here, I&apos;ll show you the table of contents of it at the time of writing:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Writing a RISC-V Emulator in Rust
+   1. Hardware Components
+      1.1. CPU with Two Instructions
+      1.2. Memory and System Bus
+      1.3. Control and Status Registers
+   2. Instruction Set
+      2.1. RV64I Base Integer Instruction Set
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And, that&apos;s it. I&apos;m not trying to bash on the creator of it I&apos;m sure it&apos;s either an unfinished or even an abandoned passion project, but when I saw this the timing was so unfortunate it became funny. For those curious, that&apos;s about 0.1 pages of table of contents.&lt;/p&gt;
+&lt;p&gt;BUT THEN IT APPEARED!&lt;/p&gt;
+&lt;p&gt;My actual saviour,&lt;br /&gt;
+the &lt;a href=&quot;https://msyksphinz-self.github.io/riscv-isadoc/&quot;&gt;RISC-V Instruction Set Specifications&lt;/a&gt; by some random github person.&lt;/p&gt;
+&lt;p&gt;It was pretty, it was useful, it sometimes had typoes and mistakes, but most importantly, it had whitespace so it didn&apos;t look scary.&lt;/p&gt;
+&lt;h2&gt;Step 3: ..make the thing already?&lt;/h2&gt;
+&lt;p&gt;It was still Sunday. I got some very basic RISC-V code working.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    .section .text
+    .globl _start
+_start:
+    li   a0, 42
+    li   a1, 99
+    add  a2, a0, a1
+1:  j   1b                # infinite loop
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;can you guess what it does? Probably not, it&apos;s too advanced.&lt;/p&gt;
+&lt;p&gt;But now that I had this very simple snippet working the momentum curve was slowly tilting in my favour.&lt;/p&gt;
+&lt;p&gt;By the end of Sunday I had 13 instructions ready. And fast forward a few days I had the entirety of RISCV64I implemented. Which of course surfaced a new kind of problem. The hardest, least motivating part of writing an emulator like this is that you really have no idea if your implementation is correct. Sure yeah your programs might be working but you don&apos;t know the edge-cases, and when a program doesn&apos;t work like you expected good luck trying to debug it.&lt;/p&gt;
+&lt;p&gt;When I brought this point up to one of my friends he linked me the &lt;a href=&quot;https://github.com/riscv-software-src/riscv-tests&quot;&gt;RISC-V Test Suite&lt;/a&gt;, which I promptly ignored in favour of compiling some Rust code and running it on my emulator.&lt;/p&gt;
+&lt;p&gt;..damn, all that set up for nothing.&lt;/p&gt;
+&lt;p&gt;Okay, to compile Rust to RISC-V, Rust provides a bunch of pre-made targets. But you see, RISC-V at it&apos;s core is a very simple instruction set with 47 instructions and it provides optional extensions like multiplcation, floating-point numbers, atomics, etc. And not implementing these optional extensions is really not an option with Rust&apos;s premade targets.&lt;/p&gt;
+&lt;p&gt;So I had to make my own custom Rust target. Which sounds interesting but was mostly done by my friend and when I asked him how he did it his response was &amp;quot;I asked ChatGPT and copy pasted the errors until it worked&amp;quot;. Which, fair enough.&lt;/p&gt;
+&lt;p&gt;Of course, the first thing I compiled with Rust was&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rs&quot;&gt;fn fib(n: usize) -&amp;gt; usize {
+    if n &amp;lt;= 1 { n }
+    else { fib(n-1) + fib(n-2) }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which worked first try of course, on the 4th try.&lt;/p&gt;
+&lt;p&gt;And now that Fibonacci was working I had to go for the second milestone of interpreter development: Flappy Bird.&lt;/p&gt;
+&lt;h2&gt;Step 4: So how do we see?&lt;/h2&gt;
+&lt;p&gt;Well, first things first, we need a window.&lt;/p&gt;
+&lt;p&gt;Since this is my emulator, I get to make the rules. And I decided that a specific memory range would be dedicated to the framebuffer. One of the few places where I actually went with the simplest option yes.
+So at address &lt;code&gt;0x1000_0000&lt;/code&gt;, I placed a 1920x1080 RGBA framebuffer, so I could see the 16x16 pixel art of Flappy Bird in full HD.&lt;/p&gt;
+&lt;p&gt;Needless to say I got humbled FAST.&lt;/p&gt;
+&lt;p&gt;See at this point, my emulator was running at a solid 100 million instructions per second (MIPS!, which sounds impressive until you do the math.&lt;/p&gt;
+&lt;p&gt;A 1920x1080 framebuffer has over 2 million pixels.
+Even if we only spent 5 instructions per pixel (which is practically impossible), that&apos;s already 10 million instructions per frame, or 10FPS.&lt;/p&gt;
+&lt;p&gt;That&apos;s with math that&apos;s about as accurate as rounding PI to 10.&lt;/p&gt;
+&lt;p&gt;I know that I&apos;m &amp;quot;speedrunning a CPU&amp;quot; but like.. it has to be at least usable you know?&lt;/p&gt;
+&lt;p&gt;So in a moment of weakness, in the middle of a uni lecture, I lowered the resolution to 640x360. Which brought the FPS from a theoretical 10FPS to about 40 real FPS.&lt;br /&gt;
+For drawing a white background.&lt;/p&gt;
+&lt;p&gt;But 40 FPS ain&apos;t real time. That&apos;s AI-interpolated horrible animation framerate, not a usable GUI app framerate. So I got to optimizing, and the one thing that really improved the performance was the Instruction Cache.&lt;/p&gt;
+&lt;h3&gt;The Instruction Cache&lt;/h3&gt;
+&lt;p&gt;Before I explain that, let&apos;s look at the problem it solves first:&lt;/p&gt;
+&lt;p&gt;When decoding a RISC-V instruction, you don&apos;t really have a single number that tells you what the instruction does. Instead, you have these instruction shapes (like register-register, register-immediate, jump instructions) and only after you figure out the instruction shape you can decode the instruction itself.&lt;/p&gt;
+&lt;p&gt;For hardware, this is extremely fast. Since the main decoder only needs to know the shape of the instruction and then can send it to something that knows how to decode it.&lt;br /&gt;
+For software, this is absolutely horrible.&lt;/p&gt;
+&lt;p&gt;For software, we first need to match on the shape of the instruction and then match on the actual instruction in order to execute it. But if you look like 5 lines above, you&apos;ll know that there&apos;s a solution to this. We can just cache the decoded instruction instead of decoding it on the fly every time. Let me introduce you to: The Instruction Cache&lt;/p&gt;
+&lt;p&gt;Basically, when were trying to decode an instruction we first hit up the instruction cache to see if it has already been decoded. If yes, then just execute that. If no, then decode it and put it in the instruction cache, then run it.&lt;/p&gt;
+&lt;p&gt;But how are we going to decide what to decode?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;We could have a 1:1 mapping of our entire memory to instructions&lt;br /&gt;
+our entire 64 bits of memory..?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Can&apos;t we just decode the code given to the emulator?&lt;br /&gt;
+Well no. If we want to run actual OS code, it&apos;ll need to be able to load new programs at runtime&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;What about a HashMap?&lt;br /&gt;
+A HashMap lookup every single instruction would probably reduce our 40FPS to 0.4&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;So what did I do?&lt;br /&gt;
+Pages!&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When loading a PC we can look at what page it&apos;s in and load that page to the instruction cache. And that works! But (not so) surprisingly, when implemented naively it&apos;s not much faster than just decoding on the fly.&lt;/p&gt;
+&lt;p&gt;The reason for this is that in the naive solution, we&apos;re checking the PC every time it moves to the next instruction, which is horribly slow and unnecessary considering most of the time we&apos;re just moving to the next instruction.&lt;/p&gt;
+&lt;p&gt;But if we&apos;re not checking the PC every time, how do we know that it has changed?&lt;/p&gt;
+&lt;p&gt;Here&apos;s the idea, let&apos;s say our pages are 1024 instructions (4KBs).&lt;br /&gt;
+What if we inserted a fake instruction at the end of the page that tells us that we&apos;re at the end of the page. Kind of like a nul-terminated string!&lt;/p&gt;
+&lt;p&gt;Then we can go fetch the new page our PC is in.&lt;/p&gt;
+&lt;p&gt;And then for instructions that modify the PC directly (jumps, branches, etc.) we can just always fetch the page for the PC.&lt;/p&gt;
+&lt;p&gt;Of course I did add early-outs to that page fetch for the common case where the jump is in the same page but that&apos;s the general idea of the Instruction Cache.&lt;/p&gt;
+&lt;p&gt;After tinkering around with the Instruction Cache a bit more, instruction decoding became essentially free. Which is absolutely amazing, but I was still at only 65FPS.&lt;/p&gt;
+&lt;h3&gt;The M extension&lt;/h3&gt;
+&lt;p&gt;Next thing I implemented was support for more advanced operations. Such as multiplication (scary), and division!&lt;/p&gt;
+&lt;p&gt;This brought the performance up from 65FPS to about 80. Mostly because before this we were using a software implementation of division and multiplication.&lt;/p&gt;
+&lt;p&gt;Which means hundreds of instructions that got replaced with a single instruction.&lt;/p&gt;
+&lt;p&gt;And unfortunately I was out of ideas for how to make this any faster, so I had to accept that my emulator was only at 160MIP/s, which is still amazing for a pure interpreter!&lt;br /&gt;
+If I had 160MIP/s back in the year 200 I would&apos;ve been basically god.&lt;/p&gt;
+&lt;p&gt;This is about the time where I went back to the RISC-V test suite I mentioned a bit ago.&lt;/p&gt;
+&lt;h2&gt;Step 5) Timeout&lt;/h2&gt;
+&lt;p&gt;Originally, this section was going to be about how, on the very last day (the saturday right before this post went up) &lt;a href=&quot;https://www.youtube.com/@leddoo&quot;&gt;leddoo&lt;/a&gt;, completely unprompted, found a way to bump the interpreter from 160 MIPS to 540 MIPS. Purely interpreted.&lt;/p&gt;
+&lt;p&gt;And I was gonna talk about it.&lt;br /&gt;
+I really was.&lt;/p&gt;
+&lt;p&gt;But then I wrote the title &amp;quot;Timeout&amp;quot; and realized:
+crap, I forgot to mention timers.&lt;/p&gt;
+&lt;p&gt;And listen-&lt;br /&gt;
+I would very much rather not talk about whatever that was.&lt;br /&gt;
+It apparently involved something called CSRs??&lt;/p&gt;
+&lt;p&gt;So that&apos;s it. Just like that my one-week CPU speedrun was over.&lt;br /&gt;
+That&apos;s your ending. We&apos;re done here.&lt;/p&gt;
+&lt;p&gt;...&lt;/p&gt;
+&lt;p&gt;oh&lt;br /&gt;
+What&apos;s that?&lt;br /&gt;
+You&apos;re curious how we went from 160MIPS to 550?&lt;/p&gt;
+&lt;p&gt;Well that&apos;s awkward.&lt;br /&gt;
+Honestly, I&apos;d love to explain it. But it&apos;s 11:30PM, I haven&apos;t even made a thumbnail yet, and this post goes up at 9AM.
+Maybe I&apos;ll write about it in another post if enough people ask. For now, &lt;a href=&quot;https://github.com/todaymare/riscv-emulator&quot;&gt;here&apos;s the repo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Here, I&apos;ll even make it easy to bother me:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://discord.gg/t7gNX8Kp72&quot;&gt;My discord server&lt;/a&gt;, if you want to bother me about the deets this is probably the best place.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;mailto:contact@daymare.net&quot;&gt;My E-Mail&lt;/a&gt;, probably not the best place but I do enjoy getting mails a lot. Makes me feel important&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And hey, if you enjoyed this post consider &lt;a href=&quot;https://ko-fi.com/todaymare&quot;&gt;buying me a cup of coffee&lt;/a&gt;.&lt;br /&gt;
+I kinda forgot this was a &amp;quot;weekly blog&amp;quot; and got way too deep into emulator dev.&lt;br /&gt;
+It happens.&lt;/p&gt;
+&lt;p&gt;Alright. Goodnight.&lt;/p&gt;
+</content></entry><entry><title>Voxel Engine in a Weekend</title><id>https://daymare.net/blogs/voxel-engine-in-a-weekend</id><updated>2025-11-08T08:59:03.535128220+00:00</updated><author><name>daymare</name><uri>https://daymare.net/</uri></author><category term="Blog"/><link href="https://daymare.net/blogs/voxel-engine-in-a-weekend" rel="alternate"/><published>2025-11-08T08:59:03.535128220+00:00</published><summary>&lt;p&gt;It feels like everyone who learns how to make a voxel-engine learns it through sheer osmosis of information, so let&apos;s change that. Come along, let&apos;s make you a voxel engine!&lt;/p&gt;</summary><content type="html">&lt;p&gt;It feels like everyone who learns how to make a voxel-engine learns it through sheer osmosis of information, so let&apos;s change that. Come along, let&apos;s make you a voxel engine!&lt;/p&gt;
 &lt;h2&gt;Overview&lt;/h2&gt;
 &lt;p&gt;Hello, are you ready? Because we&apos;re going to take you from a single cube to an entire voxel engine!&lt;br /&gt;
 Here&apos;s what you&apos;ll need to bring:&lt;/p&gt;
