@@ -215,8 +215,8 @@ What if we inserted a fake instruction at the end of the page that tells us that
 <p>Next thing I implemented was support for more advanced operations. Such as multiplication (scary), and division!</p>
 <p>This brought the performance up from 65FPS to about 80. Mostly because before this we were using a software implementation of division and multiplication.</p>
 <p>Which means hundreds of instructions that got replaced with a single instruction.</p>
-<p>And unfortunately I was out of ideas for how to make this any faster, so I had to accept that my emulator was only at 160MIP/s, which is still amazing for a pure interpreter!<br />
-If I had 160MIP/s back in the year 200 I would've been basically god.</p>
+<p>And unfortunately I was out of ideas for how to make this any faster, so I had to accept that my emulator was only at 160MIPS, which is still amazing for a pure interpreter!<br />
+If I had that many MIPS back in the year 200 I would've been basically god.</p>
 <p>This is about the time where I went back to the RISC-V test suite I mentioned a bit ago.</p>
 <h2 id="step-5-timeout">Step 5) Timeout</h2>
 <p>Originally, this section was going to be about how, on the very last day (the saturday right before this post went up) <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/@leddoo">leddoo</a>, completely unprompted, found a way to bump the interpreter from 160 MIPS to 540 MIPS. Purely interpreted.</p>
