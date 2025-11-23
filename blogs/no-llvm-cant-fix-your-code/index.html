@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>No, LLVM can't fix your code – daymare.net</title>
+    <link rel="stylesheet" href="../../blog_styles.css">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "No, LLVM can't fix your code",
+            "image": "https://daymare.net/blogs/no-llvm-cant-fix-your-code/assets/banner_1200x1010.webp",
+            "author": {
+                "@type": "Person",
+                "name": "Todaymare"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "daymare.net",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https://daymare.net/logo.png"
+                }
+            },
+            "datePublished": "2025-11-23T14:21:13.916512177Z",
+            "url": "https://daymare.net/blogs/no-llvm-cant-fix-your-code/",
+            "description": "Y'all mind if I rant a bit first, promise I'll talk about a few optimizations that got my RISC-V emulator to run at 550 million instructions per second purely interpreted.  "
+        }
+    </script>
+
+    <script src="../../blog.js" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".thumbnail.full").forEach(img => {
+                if (img.complete) img.classList.add("loaded");
+                else img.addEventListener("load", () => img.classList.add("loaded"));
+            });
+        });
+    </script>
+
+
+    <meta name="description" content="Y'all mind if I rant a bit first, promise I'll talk about a few optimizations that got my RISC-V emulator to run at 550 million instructions per second purely interpreted.  ">
+    <meta name="author" content="Todaymare">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:title" content="No, LLVM can't fix your code">
+    <meta property="og:description" content="Y'all mind if I rant a bit first, promise I'll talk about a few optimizations that got my RISC-V emulator to run at 550 million instructions per second purely interpreted.  ">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://daymare.net/blogs/no-llvm-cant-fix-your-code/">
+    <meta property="og:image" content="https://daymare.net/blogs/no-llvm-cant-fix-your-code/assets/banner_1200x1010.webp">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="No, LLVM can't fix your code">
+    <meta name="twitter:description" content="Y'all mind if I rant a bit first, promise I'll talk about a few optimizations that got my RISC-V emulator to run at 550 million instructions per second purely interpreted.  ">
+    <meta name="twitter:image" content="https://daymare.net/blogs/no-llvm-cant-fix-your-code/assets/banner_1200x1010.webp">
+
+    <link rel="canonical" href="https://daymare.net/blogs/no-llvm-cant-fix-your-code/">
+
+</head>
+<body>
+    <div class="text-body">
+
+
+    <div class="meta" itemscope itemtype="https://schema.org/BlogPosting">
+        <span><time itemprop="datePublished" datetime="2025-11-23T14:21:13.916512177Z">Nov 23</time> | <span itemprop="author">by me</span></span>
+        <span class="read-time">6 min. read</span>
+    </div>
+
+    <div class="thumbnail-wrapper">
+        <img
+            class="thumbnail preview"
+            src="data:image/webp;base64, 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"
+            alt="Low-res preview"
+            width="1900"
+            height="1600"
+        />
+        <img
+            class="thumbnail full"
+            srcset="
+            ./assets/banner_400x336.webp 400w,
+            ./assets/banner_800x673.webp 800w,
+            ./assets/banner_1200x1010.webp 1200w,
+            ./assets/banner_1600x1347.webp 1600w
+            "
+            sizes="(max-width: 80rem) 90vw, 40rem"
+            loading="lazy"
+            alt="Thumbnail for No, LLVM can't fix your code blog post"
+            width="1900"
+            height="1600"
+        />
+    </div>
+
+    <header>
+        <h1>No, LLVM can't fix your code</h1>
+    </header>
+
+    <main>
+        <article>
+            <p>Y'all mind if I rant a bit first, promise I'll talk about a few optimizations that got my RISC-V emulator to run at 550 million instructions per second purely interpreted.</p>
+<p>This is sort of a follow-up to <a target="_blank" rel="noopener noreferrer" href="../speedrunning-a-cpu/">Speedrunning a CPU</a>. But before I talk about what I did to do that:</p>
+<p>Let me set the scene, alright.</p>
+<p>2023, I'm deep in the compiler-development scene (<a target="_blank" rel="noopener noreferrer" href="../four-years-five-failures-one-compiler/">see: Four Years, Five Failures, One Compiler</a>) and this is about the time where I discovered arenas and StringMaps.</p>
+<p>An Arena, at its core, is a big vector of bytes. You can put any data you want in there. If I wanted to store a <code>Foo</code>, I'd just write it into the buffer and bump a pointer by <code>sizeof(Foo)</code>. Basically a very fast way to allocate data (like <code>malloc</code>), but without the ability to free anything individually afterwards.</p>
+<p>This is useful in compilers since you have a lot of data to allocate and more often than not the drawback doesn't matter since you won't be releasing memory in individual bits but in phases (think lexing phase, parsing phase, semantic analysis phase, etc.).</p>
+<p>Then there's the StringMap, which is a HashMap + a vector of strings. You have a HashMap of String to an index into a vector, and then a bunch of Strings.</p>
+<p>With this you can convert all strings in the program (identifiers, actual strings, etc.) to an integer index which not only has a smaller payload but also comes with constant time comparison. (think it's actually called string interning?)</p>
+<p>These kinds of data-structure decisions are what I'd call macro optimizations. The ones where you really can't expect LLVM to help you with, but of course that doesn't stop people from believing LLVM will.</p>
+<p>Anyways back to the rant, I was having a conversation with someone who was making their own programming language as well. He was trying to improve his compilers performance but he was tunnel-visioned on micro-optimizations.</p>
+<p>Look I love to give my opinion on things without being asked as much as the next guy, but this time I was asked. And considering I'd just spent weeks squeezing out huge gains from StringMaps alone, I naturally suggested he give it a try. That's when he hit me with:</p>
+<blockquote>
+<p>LLVM can already handle those with <code>mem2reg</code> and stuff, so why would I complicate my code?</p>
+</blockquote>
+<p>I can't make a deep breath sound in a blog post but just imagine one here. The fact that I still remember this quote probably says a lot about how deeply it shook me. Not to mention that this was coming from someone making compilers, someone who presumably knows more about what a compiler backend can do than the average dev.</p>
+<p>Just to be clear: no, LLVM can't and won't magically turn the thousands of generic containers and redundant string copies into a cache-friendly arena-backed interning engine.</p>
+<p>But, while that is a conversation that stuck with me, I think (I hope) that most of us know that LLVM can't do these macro-optimizations that drastically change the data layout of the program.</p>
+<p>There is, however, a category of optimizations I'd expect LLVM to be able to do</p>
+<h2 id="micro-optimizations">Micro-optimizations</h2>
+<p>Let's jump to the end of last week, optimizing the RISC-V emulator portion of the story.</p>
+<p>Micro-optimizations include the aforementioned <code>mem2reg</code>, loop unrolling, constant folding (converting stuff like <code>3 * 4</code> to <code>12</code> at compile time), etc. the stuff that is very localized and would be tedious to do by hand. Not much reason to talk about the stuff that LLVM already handles so let's zoom in on one micro-optimization that needed my help.</p>
+<p>But before that I'd like to give an honourable mention to likely/unlikely path hints.</p>
+<p>These fellas gave me about 100MIPS~ of performance in the emulator and solve a particular kind of information problem: LLVM doesn't know what your data is, so it needs to assume all branches are equally likely to be taken if it can't infer otherwise.</p>
+<p>This is a problem because it messes with the branch predictor and pollutes the instruction cache. But if you know something about your data, like that <code>time_elapsed &gt; 5s</code> almost never happens, you can tell LLVM to put that in the 'cold' section so the CPU doesn't even think about it. Which makes the hot path possibly way faster, and also makes the cold path way slower but that's a tradeoff we can choose to make.</p>
+<p>Now let's actually talk about the optimization that gave me more than 75MIPS.</p>
+<p>No, it's not removing bounds checks. I think I still have those in the emulator, those really matter less than you'd think (hey cold paths!).</p>
+<p>It's actually just deleting 5 letters.</p>
+<pre><code class="language-rs">self.cycle += 1;
+</code></pre>
+<p>into</p>
+<pre><code class="language-rs">cycle += 1;
+</code></pre>
+<p>uh, so what did that change do exactly? Well I'm glad you asked, me from 10 seconds ago! It moved the <code>cycle</code> from stack memory into a CPU register.</p>
+<p>Okay well, technically the code change was a bit more than that because LLVM can move things in memory into a register (hey <code>mem2reg</code> is back!).</p>
+<p>That is as long as the variable isn't passed mutably into a non-inlined function. Otherwise LLVM would have to assume it could be modified¹ and write it into memory before calling the function and at that point oftentimes LLVM just prefers not to put it into a register.</p>
+<p>In this context, the cycle counter is incremented every single instruction and isn't really passed into a lot of functions so I was really expecting this change to do basically nothing. Especially considering I had to put something like:</p>
+<pre><code class="language-rs">if unlikely(cycle % 128 == 0) {
+    self.cycle = cycle;
+}
+</code></pre>
+<p>in the main loop.</p>
+<h2 id="the-end">The end</h2>
+<p>Well, that's it. The moral of the story is that LLVM isn't sentient yet. Maybe when we solve the halting problem.</p>
+<p>But until then, hope to see you <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/t7gNX8Kp72">in my discord server</a>.</p>
+<p>If you enjoyed this, <a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/todaymare">considering dropping me a coffee</a>.</p>
+<p>Either way, I'll be here as usual next Sunday.</p>
+<p>¹: Yes, LLVM does fancy things like function specialization, inline heuristics, and other stuff. This is still a gross oversimplification, but I have no interest in doing a deep dive into all of that nor am I in any way qualified to.</p>
+
+        </article>
+    </main>
+
+    <nav class="post-nav">
+        <div></div>
+        <a class="home" href="../../">Home</a>
+        <div></div>
+    </nav>
+    </div>
+
+    <a target="_blank" rel="noopener noreferrer" class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">
+        <img src="../../kofi_symbol.svg" alt="Buy me a coffee on Ko-fi" width="64" height="64">
+    </a>
+
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
