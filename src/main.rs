@@ -1,8 +1,9 @@
-use std::{fmt::Write, time::SystemTime};
+use std::time::SystemTime;
 
 use atom_syndication::Category;
+use base64::Engine;
 use chrono::Datelike;
-use markdown::{Options, ParseOptions};
+use markdown::Options;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use rss_gen::{generate_rss, RssVersion};
 use webp::WebPConfig;
@@ -184,7 +185,7 @@ fn main() {
 
         let base64_thumbnail = {
             let thumb_img = std::fs::read(&format!("{}/assets/banner_50x42.webp", ident)).unwrap();
-            base64::encode(&thumb_img)
+            base64::engine::general_purpose::STANDARD.encode(&thumb_img)
         };
 
 

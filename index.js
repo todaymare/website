@@ -42,3 +42,13 @@ onScroll();
 // Update on scroll & resize
 window.addEventListener('scroll', onScroll);
 window.addEventListener('resize', updateArrowVisibility);
+
+const scroller = document.querySelector('.horizontal-scroll');
+
+scroller.addEventListener('wheel', (e) => {
+  // If the user is intentionally scrolling horizontally already, do nothing
+  if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+  e.preventDefault();
+  scroller.scrollLeft += e.deltaY;
+});
