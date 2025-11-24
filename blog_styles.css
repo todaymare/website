@@ -187,6 +187,61 @@ hr {
   .kofi {
     visibility: hidden;
   }
+
+  .mobile-post-nav {
+    display: flex;
+  }
+
+  body {
+    padding-bottom: 5vh; /* to prevent content from being hidden behind the nav */
+  }
+
+  .post-nav {
+    display: none;
+  }
+}
+
+@media (min-width: 50rem) {
+  .mobile-post-nav {
+    display: none;
+  }
+}
+
+
+.mobile-post-nav {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 5vh;
+
+  background: var(--color-primary);
+  border-top: 0.1rem solid var(--color-dark);
+  box-sizing: border-box;
+  z-index: 999;
+  opacity: 0.95;
+}
+
+.nav-item img {
+  object-fit: fill;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 1.0;
+  transition: filter .2s ease, transform .2s ease;
+  filter: saturate(110%)
+}
+
+.nav-item {
+  margin: 0.5rem;
+  width: 33vw;
+  height: 70%;
+}
+
+.nav-item:hover img {
+  opacity: 1;
+  transform: scale(1.1);
+  filter: saturate(110%) brightness(120%)
 }
 
 .kofi {

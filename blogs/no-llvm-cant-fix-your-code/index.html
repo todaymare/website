@@ -97,7 +97,7 @@
     <main>
         <article>
             <p>Y'all mind if I rant a bit first, promise I'll talk about a few optimizations that got my RISC-V emulator to run at 550 million instructions per second purely interpreted.</p>
-<p>This is sort of a follow-up to <a target="_blank" rel="noopener noreferrer" href="../speedrunning-a-cpu/">Speedrunning a CPU</a>. But before I talk about what I did to do that:</p>
+<p>This is sort of a follow-up to <a target="_blank" rel="noopener noreferrer" href="../speedrunning-a-cpu/">Speedrunning a CPU</a>. But before I talk about what I did to make it run that fast</p>
 <p>Let me set the scene, alright.</p>
 <p>2023, I'm deep in the compiler-development scene (<a target="_blank" rel="noopener noreferrer" href="../four-years-five-failures-one-compiler/">see: Four Years, Five Failures, One Compiler</a>) and this is about the time where I discovered arenas and StringMaps.</p>
 <p>An Arena, at its core, is a big vector of bytes. You can put any data you want in there. If I wanted to store a <code>Foo</code>, I'd just write it into the buffer and bump a pointer by <code>sizeof(Foo)</code>. Basically a very fast way to allocate data (like <code>malloc</code>), but without the ability to free anything individually afterwards.</p>
@@ -153,6 +153,22 @@
         <div></div>
     </nav>
     </div>
+
+
+    <nav class="mobile-post-nav">
+        <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/t7gNX8Kp72" target="_blank" rel="noopener noreferrer" class="nav-item">
+            <img src="../../discord-icon.svg" alt="Discord">
+        </a>
+
+        <a href="/" class="nav-item home-btn">
+            <img src="../../home-icon.svg" alt="Home">
+        </a>
+
+        <a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer" class="nav-item">
+            <img src="../../tinted_kofi_symbol.svg" alt="Buy me a coffee on Ko-fi">
+        </a>
+    </nav>
+
 
     <a target="_blank" rel="noopener noreferrer" class="kofi" href="https://ko-fi.com/todaymare" target="_blank" rel="noopener noreferrer">
         <img src="../../kofi_symbol.svg" alt="Buy me a coffee on Ko-fi" width="64" height="64">

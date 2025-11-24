@@ -1,7 +1,7 @@
 # No, LLVM can't fix your code
 Y'all mind if I rant a bit first, promise I'll talk about a few optimizations that got my RISC-V emulator to run at 550 million instructions per second purely interpreted.  
 
-This is sort of a follow-up to [Speedrunning a CPU](../speedrunning-a-cpu/). But before I talk about what I did to do that:
+This is sort of a follow-up to [Speedrunning a CPU](../speedrunning-a-cpu/). But before I talk about what I did to make it run that fast
 
 Let me set the scene, alright.  
 
