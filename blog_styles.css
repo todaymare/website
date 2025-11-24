@@ -183,30 +183,6 @@ hr {
   opacity: 1;
 }
 
-@media (max-width: 50rem) {
-  .kofi {
-    visibility: hidden;
-  }
-
-  .mobile-post-nav {
-    display: flex;
-  }
-
-  body {
-    padding-bottom: 5vh; /* to prevent content from being hidden behind the nav */
-  }
-
-  .post-nav {
-    display: none;
-  }
-}
-
-@media (min-width: 50rem) {
-  .mobile-post-nav {
-    display: none;
-  }
-}
-
 
 .mobile-post-nav {
   position: fixed;
@@ -277,6 +253,25 @@ hr {
   margin-left: 0.1rem;
   margin-top: 0.1rem;
 }
+
+@media (max-width: 50rem) {
+  .kofi {
+    visibility: hidden;
+  }
+
+  .mobile-post-nav {
+    display: flex;
+  }
+
+  body {
+    padding-bottom: 5vh; /* to prevent content from being hidden behind the nav */
+  }
+
+  .post-nav {
+    display: none;
+  }
+}
+
 
 @keyframes popIn {
   0% {
