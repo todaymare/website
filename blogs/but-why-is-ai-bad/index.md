@@ -75,6 +75,6 @@ Because right now? You can't use AI, I'll ruin your reputation and drain your pa
 
 It's annoying. We have this purism mentality that is harming everyone. 
 
-Look, I'm only a single person so I'm sure to some of you I've missed the whole point. Regardless, I'd love to hear other people's perspectives so if you want to discuss this you can leave your pitchfork here and find me over at [my discord server](https://discord.gg/t7gNX8Kp72).  
+Look, I'm only a single person so I'm sure to some of you I've missed the whole point. Regardless, I'd love to hear other people's perspectives so if you want to discuss this you can leave your torches here too and find me over at [my discord server](https://discord.gg/t7gNX8Kp72).  
 
 psst, [can you consider tipping me on ko-fi](https://ko-fi.com/todaymare)? thank you!
