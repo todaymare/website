@@ -40,7 +40,7 @@ I went back and added a custom `Generic` variant to container types, so now I st
 
 Yess! There were multiple places where this assertion failed. Field accesses, identifiers, even closures! I fixed those cases, resolved the generics completely and it compiled fully!
 
-Now, margarine's runtime is very slow right now (200-300MIPS), especially for the dask day 2 was asking of me. So it took a good 30 seconds to run the entire test each time I wanted to see if it worked. I was counting for 4 garbage collection messages, because the garbage collection still had the debug prints for "garbage collected in 5ms". 
+Now, margarine's runtime is very slow right now (200-300MIPS), especially for the task day 2 was asking of me. So it took a good 30 seconds to run the entire test each time I wanted to see if it worked. I was counting for 4 garbage collection messages, because the garbage collection still had the debug prints for "garbage collected in 5ms". 
 
 The tension was high is what I'm saying.
 

@@ -117,7 +117,7 @@
 <p>Look, I would not do it this way if I were making it now but margarine has been going on and off for 2 years or so, it's basically legacy code for me.</p>
 <p>I went back and added a custom <code>Generic</code> variant to container types, so now I still register them as symbols to the type table but at least I know that they are generics and not just empty structs. Then, I went to the <code>get_func</code> function and added an assertion to make sure that the requested function is a fully resolved type.</p>
 <p>Yess! There were multiple places where this assertion failed. Field accesses, identifiers, even closures! I fixed those cases, resolved the generics completely and it compiled fully!</p>
-<p>Now, margarine's runtime is very slow right now (200-300MIPS), especially for the dask day 2 was asking of me. So it took a good 30 seconds to run the entire test each time I wanted to see if it worked. I was counting for 4 garbage collection messages, because the garbage collection still had the debug prints for &quot;garbage collected in 5ms&quot;.</p>
+<p>Now, margarine's runtime is very slow right now (200-300MIPS), especially for the task day 2 was asking of me. So it took a good 30 seconds to run the entire test each time I wanted to see if it worked. I was counting for 4 garbage collection messages, because the garbage collection still had the debug prints for &quot;garbage collected in 5ms&quot;.</p>
 <p>The tension was high is what I'm saying.</p>
 <p>garbage collected in 4.7ms<br />
 garbage collected in 3.5ms<br />
